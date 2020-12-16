@@ -22,16 +22,16 @@ def testDbConn(cur):
 
     # Read from Lake doing a Group By of week for the year to print out total mileage for the year
     selectQry = """
-        select to_char(wrkt_dt,'YYYY-MM') RUN_MONTH, count(*) TOT_RUNS, sum(dist) TOT_DIST
+        select to_char(wrkt_dt,'YYYY-MM') RUN_MONTH, count(*) TOT_RUNS, sum(dist) TOT_DIST, LAKE.SEC_TO_TM_STR(sum(LAKE.TM_STR_to_SEC(TOT_TM,'hms')),':') TOT_TM_SEC
         from lake.exercise
-        where wrkt_typ in ('Running','Indoor Running') AND wrkt_dt >= to_date(%s,'YYYY-MM-DD') 
+        where wrkt_typ in ('Running','Indoor Running') AND wrkt_dt >= to_date(%s,'YYYY-MM-DD')
         group by to_char(wrkt_dt,'YYYY-MM') order by to_char(wrkt_dt,'YYYY-MM')
         ;"""
     cur.execute(selectQry, ('2020-01-01',))
 
     rowLst = cur.fetchall()
     for row in rowLst:
-        print('Month ' + row[0] + ': ran ' + str(row[1]) + ' times for total mileage ' + str(row[2]))
+        print('Month ' + row[0] + ': ran ' + str(row[1]) + ' times for total mileage ' + str(row[2]) + ' total time ' + str(row[3]))
 
 def getConnection(dbConn):
     conn = psycopg2.connect(host=dbConn['host'], database=dbConn['database'], user=dbConn['user'], password=dbConn['password'])
