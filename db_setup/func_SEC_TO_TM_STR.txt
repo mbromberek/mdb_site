@@ -1,0 +1,16 @@
+create or replace function LAKE.SEC_TO_TM_STR(SEC_VAR DECIMAL, FMT VARCHAR) returns VARCHAR
+  AS
+  $$
+  SELECT
+  CASE
+    WHEN FMT = 'hms' THEN
+      LPAD(floor(SEC_VAR/3600)::VARCHAR, 2, '0') || 'h ' ||
+        lpad(floor((SEC_VAR%3600)/60)::VARCHAR, 2, '0') || 'm ' ||
+        lpad(((SEC_VAR%3600)%60)::VARCHAR, 2, '0')  || 's'
+    ELSE
+      lpad(floor(SEC_VAR/3600)::VARCHAR, 2, '0') || ':' ||
+        lpad(floor((SEC_VAR%3600)/60)::VARCHAR, 2, '0') || ':' ||
+        lpad(((SEC_VAR%3600)%60)::VARCHAR, 2, '0')
+  END
+  ;
+  $$ LANGUAGE SQL
