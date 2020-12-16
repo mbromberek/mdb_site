@@ -28,19 +28,27 @@ def testDbConn(cur):
     for row in rowLst:
         print('Month ' + row[0] + ': ran ' + str(row[1]) + ' times for total mileage ' + str(row[2]))
 
+def getConnection(dbConn):
+    conn = psycopg2.connect(host=dbConn['host'], database=dbConn['database'], user=dbConn['user'], password=dbConn['password'])
+    cur = conn.cursor()
+    return conn,cur
+
+def closeConnection(cur, conn):
+    if (conn):
+        cur.close()
+        conn.close()
+
 
 def main():
     dbConfig = configparser.ConfigParser()
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(progDir + "/../database.ini")
 
-    conn = psycopg2.connect(host=dbConfig['postgresql']['host'], database=dbConfig['postgresql']['database'], user=dbConfig['postgresql']['user'], password=dbConfig['postgresql']['password'])
-    cur = conn.cursor()
-
-    testDbConn(cur)
-
-    cur.close()
-    conn.close()
+    try:
+        conn, cur = getConnection(dbConfig['postgresql'])
+        testDbConn(cur)
+    finally:
+        closeConnection(cur, conn)
 
 
 if __name__ == '__main__':
