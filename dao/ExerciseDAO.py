@@ -21,8 +21,13 @@ def testDbConn(cur):
     print(db_version)
 
     # Read from Lake doing a Group By of week for the year to print out total mileage for the year
-    # Get and print DB versions
-    cur.execute("select to_char(wrkt_dt,'YYYY-MM') RUN_MONTH, count(*) TOT_RUNS, sum(dist) TOT_DIST from lake.exercise where wrkt_typ in ('Running','Indoor Running') AND wrkt_dt >= to_date('2020-01-01','YYYY-MM-DD') group by to_char(wrkt_dt,'YYYY-MM') order by to_char(wrkt_dt,'YYYY-MM');")
+    selectQry = """
+        select to_char(wrkt_dt,'YYYY-MM') RUN_MONTH, count(*) TOT_RUNS, sum(dist) TOT_DIST
+        from lake.exercise
+        where wrkt_typ in ('Running','Indoor Running') AND wrkt_dt >= to_date(%s,'YYYY-MM-DD') 
+        group by to_char(wrkt_dt,'YYYY-MM') order by to_char(wrkt_dt,'YYYY-MM')
+        ;"""
+    cur.execute(selectQry, ('2020-01-01',))
 
     rowLst = cur.fetchall()
     for row in rowLst:
