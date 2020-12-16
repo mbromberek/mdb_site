@@ -1,0 +1,8 @@
+create or replace function LAKE.TM_STR_to_SEC(TM_STR VARCHAR, FMT VARCHAR) RETURNS DECIMAL AS $$
+
+  SELECT coalesce(trim(substring(TM_STR from '(.*\d)h')),'0')::DECIMAL *60*60 +
+  coalesce(trim(substring(TM_STR from 'h(.*\d)m')),trim(substring(TM_STR from '^(.*\d)m')))::DECIMAL *60 +
+  coalesce(trim(substring(TM_STR from 'm(.*\d)s')),trim(substring(TM_STR from '^(.*\d)s')))::DECIMAL
+
+;
+$$ LANGUAGE SQL
