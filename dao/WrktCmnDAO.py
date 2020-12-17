@@ -43,6 +43,15 @@ def closeConnection(cur, conn):
         cur.close()
         conn.close()
 
+def lakeToCoreWrkt(dbConfig):
+    cur = ''
+    conn = ''
+    try:
+        conn, cur = getConnection(dbConfig['postgresql'])
+        testDbConn(cur)
+    finally:
+        closeConnection(cur, conn)
+
 
 def main():
     dbConfig = configparser.ConfigParser()

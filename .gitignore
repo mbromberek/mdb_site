@@ -2,3 +2,4 @@
 *.ini
 .DS_Store
 db_setup/accounts.txt
+*.pyc
