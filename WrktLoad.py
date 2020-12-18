@@ -23,8 +23,11 @@ import dao.ToWrkt as toWrkt
 def normEx(exLstOrig):
     exLstMod = []
     for ex in exLstOrig:
+        # Break up elevation into two fields
         ex.pop('elevation',None)
         ex.pop('category',None)
+
+        # Break up Notes into Weather Start, Weather End, Clothes, Notes rest
         exLstMod.append(ex)
 
     return exLstMod
@@ -35,7 +38,7 @@ def main():
     dbConfig.read(os.path.join(progDir, "database.ini"))
 
     # Read Exercises from LAKE
-    exLst = readEx.getExercises(dbConfig['postgresql_read'])
+    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2020-12-10')
     # print(exLst)
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)
