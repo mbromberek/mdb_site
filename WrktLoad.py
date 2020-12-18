@@ -23,6 +23,8 @@ import dao.ToWrkt as toWrkt
 def normEx(exLstOrig):
     exLstMod = []
     for ex in exLstOrig:
+        ex['ele_up'] = ex['elevation'].split('↑')[0]
+        ex['ele_down'] = ex['elevation'].split('↑')[1].split('↓')[0]
         # Break up elevation into two fields
         ex.pop('elevation',None)
         ex.pop('category',None)
