@@ -42,14 +42,9 @@ def normEx(exLstOrig):
 
         ex.update(splitWeather(weatherStart, keySuffix='_strt'))
         ex.update(splitWeather(weatherEnd, keySuffix='_end'))
-
-        # print('Weather Start: ' + weatherStart)
-        # print('Weather End: ' + weatherEnd)
-        # print('Clothes: ' + ex['clothes'])
-        # print('RemainingNotes: ' + remainingNotes)
-        # print('\nNotes: ' + ex['notes'])
-
         ex['notes'] = remainingNotes
+
+        ex['wrkt_tags'] = calcWrktTags(ex)
         ex.pop('category',None)
         logger.info(ex)
 
@@ -57,6 +52,28 @@ def normEx(exLstOrig):
         exLstMod.append(ex)
 
     return exLstMod
+
+def calcWrktTags(wrkt):
+    '''
+    Get workout tags using provided workout
+    Creates a Category tag based on the workouts category field
+    Return List of workout tags
+    '''
+    wrkt_tags = []
+    wrkt_categories = ['race','training', 'hard run', 'easy', 'long run', 'warm up', 'cool down', 'midfoot strike']
+    for category_split in wrkt['category'].split(' - '):
+        wrkt_tag = {}
+        wrkt_tag['wrkt_dt'] = wrkt['wrkt_dt']
+        wrkt_tag['wrkt_typ'] = wrkt['wrkt_typ']
+        if category_split.lower() in wrkt_categories:
+            wrkt_tag['tag_typ'] = 'category'
+        else:
+            wrkt_tag['tag_typ'] = 'wrkt_typ'
+        wrkt_tag['tag_val'] = category_split.lower()
+        wrkt_tags.append(wrkt_tag)
+
+    return wrkt_tags
+
 
 def splitWeather(wethrStr, keySuffix=''):
     '''
@@ -86,13 +103,13 @@ def main():
     dbConfig.read(os.path.join(progDir, "database.ini"))
 
     # Read Exercises from LAKE
-    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2020-12-12')
+    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2020-12-10')
     # print(exLst)
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)
 
     # Write Exercises to CORE_FITNESS
-    toWrkt.writeExercises(dbConfig['postgresql_write'], exNormLst)
+    toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
     logger.info('WrktLoad End')
 
 

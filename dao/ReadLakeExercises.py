@@ -48,6 +48,7 @@ def readAll(cur, strt_dt):
       , LAKE.TM_STR_to_SEC(PACE,'hms') PACE_SEC
       , GEAR
       , elevation
+      , category
       , hr
       , cal_burn
       , NOTES
