@@ -13,12 +13,19 @@ Used for loading exercise/workout data between tables
 # First party classes
 import os, sys
 import configparser
+import logging
+import logging.config
 
 # Third party classes
 
 # Custom classes
 import dao.ReadLakeExercises as readEx
 import dao.ToWrkt as toWrkt
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger()
+toWrkt.logger = logger
+readEx.logger = logger
 
 def normEx(exLstOrig):
     exLstMod = []
@@ -44,12 +51,13 @@ def normEx(exLstOrig):
 
         ex['notes'] = remainingNotes
         ex.pop('category',None)
-        print(ex)
+        logger.info(ex)
 
         # Break up Notes into Weather Start, Weather End, Clothes, Notes rest
         exLstMod.append(ex)
 
     return exLstMod
+
 def splitWeather(wethrStr, keySuffix=''):
     '''
     Splits up weather from passed in string.
@@ -71,6 +79,8 @@ def splitWeather(wethrStr, keySuffix=''):
 
 
 def main():
+    logger.info('WrktLoad Start')
+
     dbConfig = configparser.ConfigParser()
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(os.path.join(progDir, "database.ini"))
@@ -83,6 +93,7 @@ def main():
 
     # Write Exercises to CORE_FITNESS
     toWrkt.writeExercises(dbConfig['postgresql_write'], exNormLst)
+    logger.info('WrktLoad End')
 
 
 if __name__ == '__main__':

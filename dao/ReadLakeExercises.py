@@ -12,6 +12,8 @@ Used for reading from Lake.Exercise table
 
 # First party classes
 import os, sys
+import logging
+import logging.config
 
 # Third party classes
 import psycopg2
@@ -23,6 +25,7 @@ def getExercises(dbConfig, strt_dt='0001-01-01'):
     cur = ''
     conn = ''
     # Validate strt_dt is in format of (4{\d}-2{\d}-2{\d})
+    logger.debug('strt_dt: ' + strt_dt)
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
@@ -51,7 +54,6 @@ def readAll(cur, strt_dt):
     from lake.exercise
     where wrkt_dt >= to_date(%s,'YYYY-MM-DD')
     ;"""
-    # where wrkt_dt >= to_date('2020-12-10','YYYY-MM-DD')
     cur.execute(selectQry, (strt_dt,))
 
     exLst = []
