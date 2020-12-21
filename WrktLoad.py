@@ -145,7 +145,7 @@ def main():
     dbConfig.read(os.path.join(progDir, "database.ini"))
 
     # Read Exercises from LAKE
-    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2020-12-10')
+    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2019-12-10') #, end_dt='2019-12-14')
 
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)

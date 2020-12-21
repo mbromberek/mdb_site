@@ -21,19 +21,20 @@ import psycopg2
 # Custom classes
 import dao.WrktCmnDAO as cmnDAO
 
-def getExercises(dbConfig, strt_dt='0001-01-01'):
+def getExercises(dbConfig, strt_dt='0001-01-01', end_dt='9999-12-31'):
     cur = ''
     conn = ''
     # Validate strt_dt is in format of (4{\d}-2{\d}-2{\d})
     logger.debug('strt_dt: ' + strt_dt)
+    logger.debug('end_dt: ' + end_dt)
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
-        return(readAll(cur, strt_dt))
+        return(readAll(cur, strt_dt, end_dt))
     finally:
         cmnDAO.closeConnection(cur, conn)
 
-def readAll(cur, strt_dt):
+def readAll(cur, strt_dt, end_dt):
     '''
     Parameter database cursor
     Reads all records from LAKE.EXERCISE table
@@ -53,9 +54,9 @@ def readAll(cur, strt_dt):
       , cal_burn
       , NOTES
     from lake.exercise
-    where wrkt_dt >= to_date(%s,'YYYY-MM-DD')
+    where wrkt_dt between to_date(%s,'YYYY-MM-DD') and to_date(%s,'YYYY-MM-DD')
     ;"""
-    cur.execute(selectQry, (strt_dt,))
+    cur.execute(selectQry, (strt_dt,end_dt,))
 
     exLst = []
     rowLst = cur.fetchall()
