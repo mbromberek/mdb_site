@@ -15,6 +15,7 @@ import os, sys
 import configparser
 import logging
 import logging.config
+import re
 
 # Third party classes
 
@@ -35,23 +36,62 @@ def normEx(exLstOrig):
         ex['ele_down'] = ex['elevation'].split('↑')[1].split('↓')[0]
         ex.pop('elevation',None)
 
-        weatherStart = ex['notes'].split('\n')[0]
-        weatherEnd = ex['notes'].split('\n')[1]
-        ex['clothes'] = ex['notes'].split('\n')[2]
-        remainingNotes = '\n'.join(ex['notes'].split('\n')[3:])
-
-        ex.update(splitWeather(weatherStart, keySuffix='_strt'))
-        ex.update(splitWeather(weatherEnd, keySuffix='_end'))
-        ex['notes'] = remainingNotes
+        notesDict = splitWeatherClothes(ex['notes'])
+        ex.update(splitWeather(notesDict['weatherStart'], keySuffix='_strt'))
+        ex.update(splitWeather(notesDict['weatherEnd'], keySuffix='_end'))
+        ex['clothes'] = notesDict['clothes']
+        ex['notes'] = notesDict['remainingNotes']
 
         ex['wrkt_tags'] = calcWrktTags(ex)
         ex.pop('category',None)
-        logger.info(ex)
+        logger.debug(ex)
 
-        # Break up Notes into Weather Start, Weather End, Clothes, Notes rest
         exLstMod.append(ex)
 
     return exLstMod
+
+def splitWeatherClothes(rec):
+    '''
+    Use regular expression patterns to get the start, end, and clothes from passed in record.
+    Gets the last position of the sections broken out to get the remainder of the notes.
+    Returns dictionary of the pulled values. Any sections not found will have an empty string.
+        Return dictionary keys are weatherStart, weatherEnd, clothes, remainingNotes
+    '''
+    logger.debug('Input Record:' + rec)
+    d = {}
+
+    weatherStartPattern = r'Start:(.*?)(s\.|\n)'
+    weatherEndPattern = r'End:(.*?)(s\.|\n)'
+    clothesPattern = r'(Shorts|Tights)(.{0,125})(\.|\n)'
+
+    matchWeatherStart = re.search(weatherStartPattern, rec)
+    endMatchPos = 0
+    if matchWeatherStart:
+        d['weatherStart'] = matchWeatherStart.group(0).strip()
+        endMatchPos = max(endMatchPos, matchWeatherStart.end(0))
+    else:
+        d['weatherStart'] = ''
+    matchWeatherEnd = re.search(weatherEndPattern, rec)
+    if matchWeatherEnd:
+        d['weatherEnd'] = matchWeatherEnd.group(0).strip()
+        endMatchPos = max(endMatchPos, matchWeatherEnd.end(0))
+    else:
+        d['weatherEnd'] = ''
+    matchClothes = re.search(clothesPattern,rec)
+    if matchClothes:
+        d['clothes'] = matchClothes.group(0).strip()
+        endMatchPos = max(endMatchPos, matchClothes.end(0))
+    else:
+        d['clothes'] = ''
+
+    d['remainingNotes'] = rec[endMatchPos:].strip()
+    logger.debug('Weather Start:' + d['weatherStart'])
+    logger.debug('Weather End:' + d['weatherEnd'])
+    logger.debug('Clothes:' + d['clothes'])
+    logger.debug('Notes:' + d['remainingNotes'])
+    return d
+
+
 
 def calcWrktTags(wrkt):
     '''
@@ -104,9 +144,10 @@ def main():
 
     # Read Exercises from LAKE
     exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2020-12-10')
-    # print(exLst)
+
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)
+    logger.info(len(exNormLst))
 
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
