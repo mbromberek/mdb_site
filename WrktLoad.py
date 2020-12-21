@@ -16,6 +16,7 @@ import configparser
 import logging
 import logging.config
 import re
+import datetime
 
 # Third party classes
 
@@ -37,15 +38,18 @@ def normEx(exLstOrig):
             ex['ele_down'] = ex['elevation'].split('↑')[1].split('↓')[0]
         ex.pop('elevation',None)
 
-        notesDict = splitWeatherClothes(ex['notes'])
-        ex.update(splitWeather(notesDict['weatherStart'], keySuffix='_strt'))
-        ex.update(splitWeather(notesDict['weatherEnd'], keySuffix='_end'))
-        ex['clothes'] = notesDict['clothes']
-        ex['notes'] = notesDict['remainingNotes']
+        # Do not want to process notes for workouts before 2017-05-01
+        if ex['wrkt_dt'] >= datetime.datetime(2017, 5,1):
+            notesDict = splitWeatherClothes(ex['notes'])
+            if notesDict != None :
+                ex.update(splitWeather(notesDict['weatherStart'], keySuffix='_strt'))
+                ex.update(splitWeather(notesDict['weatherEnd'], keySuffix='_end'))
+                ex['clothes'] = notesDict['clothes']
+                ex['notes'] = notesDict['remainingNotes']
 
         ex['wrkt_tags'] = calcWrktTags(ex)
         ex.pop('category',None)
-        logger.info(ex)
+        logger.debug(ex)
 
         exLstMod.append(ex)
 
@@ -58,9 +62,12 @@ def splitWeatherClothes(rec):
     Returns dictionary of the pulled values. Any sections not found will have an empty string.
         Return dictionary keys are weatherStart, weatherEnd, clothes, remainingNotes
     '''
-    logger.debug('Input Record:' + rec)
+    logger.debug('Input Record:' + str(rec))
     d = {}
+    if rec == None:
+        return None
 
+    oldRecPattern = r'^[\d|:](.*?)[am|pm] '
     weatherPattern = r'^\d(.*?)(\. |\n)'
     weatherStartPattern = r'Start:(.*?)([a-z]\.|\n)'
     weatherEndPattern = r'End:(.*?)([a-z]\.|\n)'
@@ -95,10 +102,6 @@ def splitWeatherClothes(rec):
     logger.debug('Weather End:' + d['weatherEnd'])
     logger.debug('Clothes:' + d['clothes'])
     logger.debug('Notes:' + d['remainingNotes'])
-    logger.info('Weather Start:' + d['weatherStart'])
-    logger.info('Weather End:' + d['weatherEnd'])
-    logger.info('Clothes:' + d['clothes'])
-    logger.info('Notes:' + d['remainingNotes'])
     return d
 
 
@@ -183,8 +186,8 @@ def main():
     dbConfig.read(os.path.join(progDir, "database.ini"))
 
     # Read Exercises from LAKE
-    # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2018-07-10' , end_dt='2018-07-11')
-    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2018-01-01')
+    # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2017-05-01', end_dt='2017-12-31')
+    exLst = readEx.getExercises(dbConfig['postgresql_read'])
 
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)
