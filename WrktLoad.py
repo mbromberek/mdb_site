@@ -44,7 +44,7 @@ def normEx(exLstOrig):
 
         ex['wrkt_tags'] = calcWrktTags(ex)
         ex.pop('category',None)
-        logger.debug(ex)
+        logger.info(ex)
 
         exLstMod.append(ex)
 
@@ -64,20 +64,20 @@ def splitWeatherClothes(rec):
     weatherEndPattern = r'End:(.*?)(s\.|\n)'
     clothesPattern = r'(Shorts|Tights)(.{0,125})(\.|\n)'
 
-    matchWeatherStart = re.search(weatherStartPattern, rec)
+    matchWeatherStart = re.search(weatherStartPattern, rec, flags=re.IGNORECASE)
     endMatchPos = 0
     if matchWeatherStart:
         d['weatherStart'] = matchWeatherStart.group(0).strip()
         endMatchPos = max(endMatchPos, matchWeatherStart.end(0))
     else:
         d['weatherStart'] = ''
-    matchWeatherEnd = re.search(weatherEndPattern, rec)
+    matchWeatherEnd = re.search(weatherEndPattern, rec, flags=re.IGNORECASE)
     if matchWeatherEnd:
         d['weatherEnd'] = matchWeatherEnd.group(0).strip()
         endMatchPos = max(endMatchPos, matchWeatherEnd.end(0))
     else:
         d['weatherEnd'] = ''
-    matchClothes = re.search(clothesPattern,rec)
+    matchClothes = re.search(clothesPattern,rec, flags=re.IGNORECASE)
     if matchClothes:
         d['clothes'] = matchClothes.group(0).strip()
         endMatchPos = max(endMatchPos, matchClothes.end(0))
@@ -121,14 +121,16 @@ def splitWeather(wethrStr, keySuffix=''):
     Returns a dictionary of weather values.
     Key names can have the keySuffix appended to the end of each name. Default is no suffix
     '''
+
     wethrDict = {}
     wethrLst = wethrStr.split(',')
-    wethrDict['temp' + keySuffix] = wethrLst[0].strip().split(' ')[1]
-    wethrDict['wethr_cond' + keySuffix] = wethrLst[0].strip().split(' ')[3]
-    wethrDict['hmdty' + keySuffix] = wethrLst[1].strip().split(' ')[0]
-    wethrDict['wind_speed' + keySuffix] = wethrLst[2].strip().split(' ')[2]
-    wethrDict['wind_gust' + keySuffix] = wethrLst[3].strip().split(' ')[2].split('mph')[0]
-    wethrDict['temp_feels_like' + keySuffix] = wethrLst[4].strip().split(' ')[2]
+    if len(wethrLst) == 5:
+        wethrDict['temp' + keySuffix] = wethrLst[0].strip().split(' ')[1]
+        wethrDict['wethr_cond' + keySuffix] = wethrLst[0].strip().split(' ')[3]
+        wethrDict['hmdty' + keySuffix] = wethrLst[1].strip().split(' ')[0]
+        wethrDict['wind_speed' + keySuffix] = wethrLst[2].strip().split(' ')[2]
+        wethrDict['wind_gust' + keySuffix] = wethrLst[3].strip().split(' ')[2].split('mph')[0]
+        wethrDict['temp_feels_like' + keySuffix] = wethrLst[4].strip().split(' ')[2]
 
     return wethrDict
 
@@ -147,7 +149,7 @@ def main():
 
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)
-    logger.info(len(exNormLst))
+    logger.info('Number of Exercises read: ' + str(len(exNormLst)))
 
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
