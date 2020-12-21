@@ -32,8 +32,9 @@ def normEx(exLstOrig):
     exLstMod = []
     for ex in exLstOrig:
         # Break up elevation into two fields
-        ex['ele_up'] = ex['elevation'].split('↑')[0]
-        ex['ele_down'] = ex['elevation'].split('↑')[1].split('↓')[0]
+        if ex['elevation'] != None:
+            ex['ele_up'] = ex['elevation'].split('↑')[0]
+            ex['ele_down'] = ex['elevation'].split('↑')[1].split('↓')[0]
         ex.pop('elevation',None)
 
         notesDict = splitWeatherClothes(ex['notes'])
@@ -60,15 +61,20 @@ def splitWeatherClothes(rec):
     logger.debug('Input Record:' + rec)
     d = {}
 
-    weatherStartPattern = r'Start:(.*?)(s\.|\n)'
-    weatherEndPattern = r'End:(.*?)(s\.|\n)'
-    clothesPattern = r'(Shorts|Tights)(.{0,125})(\.|\n)'
+    weatherPattern = r'^\d(.*?)(\. |\n)'
+    weatherStartPattern = r'Start:(.*?)([a-z]\.|\n)'
+    weatherEndPattern = r'End:(.*?)([a-z]\.|\n)'
+    clothesPattern = r'(Shorts|Tights)(.{0,125}?)(\.|\n)'
 
     matchWeatherStart = re.search(weatherStartPattern, rec, flags=re.IGNORECASE)
+    matchWeather = re.search(weatherPattern, rec, flags=re.IGNORECASE)
     endMatchPos = 0
     if matchWeatherStart:
         d['weatherStart'] = matchWeatherStart.group(0).strip()
         endMatchPos = max(endMatchPos, matchWeatherStart.end(0))
+    elif matchWeather:
+        d['weatherStart'] = matchWeather.group(0).strip()
+        endMatchPos = max(endMatchPos, matchWeather.end(0))
     else:
         d['weatherStart'] = ''
     matchWeatherEnd = re.search(weatherEndPattern, rec, flags=re.IGNORECASE)
@@ -89,6 +95,10 @@ def splitWeatherClothes(rec):
     logger.debug('Weather End:' + d['weatherEnd'])
     logger.debug('Clothes:' + d['clothes'])
     logger.debug('Notes:' + d['remainingNotes'])
+    logger.info('Weather Start:' + d['weatherStart'])
+    logger.info('Weather End:' + d['weatherEnd'])
+    logger.info('Clothes:' + d['clothes'])
+    logger.info('Notes:' + d['remainingNotes'])
     return d
 
 
@@ -100,6 +110,10 @@ def calcWrktTags(wrkt):
     Return List of workout tags
     '''
     wrkt_tags = []
+
+    if wrkt['category'] == None:
+        return wrkt_tags
+
     wrkt_categories = ['race','training', 'hard run', 'easy', 'long run', 'warm up', 'cool down', 'midfoot strike']
     for category_split in wrkt['category'].split(' - '):
         wrkt_tag = {}
@@ -123,6 +137,10 @@ def splitWeather(wethrStr, keySuffix=''):
     '''
 
     wethrDict = {}
+
+    if wethrStr == '':
+        return wethrDict
+
     wethrLst = wethrStr.split(',')
     if len(wethrLst) == 5:
         wethrDict['temp' + keySuffix] = wethrLst[0].strip().split(' ')[1]
@@ -135,6 +153,23 @@ def splitWeather(wethrStr, keySuffix=''):
         wethrDict['temp' + keySuffix] = wethrLst[0].strip().split(' ')[1]
         wethrDict['hmdty' + keySuffix] = wethrLst[1].strip().split(' ')[0]
         wethrDict['temp_feels_like' + keySuffix] = wethrLst[2].strip().split(' ')[2]
+    elif len(wethrLst) == 1:
+        wethrLst = wethrStr.split(' ')
+        if wethrLst[0].isdigit() == False:
+            wethrDict['temp' + keySuffix] = wethrLst[1].strip()
+            if len(wethrLst) > 3:
+                wethrDict['hmdty' + keySuffix] = wethrLst[3].strip()
+            if len(wethrLst) >= 8:
+                wethrDict['temp_feels_like' + keySuffix] = wethrLst[8].strip()
+        elif len(wethrLst) == 5:
+            wethrDict['temp' + keySuffix] = wethrLst[0].strip()
+            if wethrLst[2].isdigit():
+                wethrDict['hmdty' + keySuffix] = wethrLst[2].strip()
+            else:
+                wethrDict['temp_feels_like' + keySuffix] = wethrLst[4].strip()
+        elif len(wethrLst) == 2:
+            wethrDict['temp' + keySuffix] = wethrLst[0].strip()
+
     return wethrDict
 
 
@@ -148,7 +183,8 @@ def main():
     dbConfig.read(os.path.join(progDir, "database.ini"))
 
     # Read Exercises from LAKE
-    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2019-12-10') #, end_dt='2019-12-14')
+    # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2018-07-10' , end_dt='2018-07-11')
+    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2018-01-01')
 
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)
