@@ -131,7 +131,10 @@ def splitWeather(wethrStr, keySuffix=''):
         wethrDict['wind_speed' + keySuffix] = wethrLst[2].strip().split(' ')[2]
         wethrDict['wind_gust' + keySuffix] = wethrLst[3].strip().split(' ')[2].split('mph')[0]
         wethrDict['temp_feels_like' + keySuffix] = wethrLst[4].strip().split(' ')[2]
-
+    elif len(wethrLst) == 3:
+        wethrDict['temp' + keySuffix] = wethrLst[0].strip().split(' ')[1]
+        wethrDict['hmdty' + keySuffix] = wethrLst[1].strip().split(' ')[0]
+        wethrDict['temp_feels_like' + keySuffix] = wethrLst[2].strip().split(' ')[2]
     return wethrDict
 
 
