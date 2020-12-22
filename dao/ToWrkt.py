@@ -27,13 +27,13 @@ def writeWrkts(dbConfig, exLst):
     conn = ''
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
-        writeWrkt(cur, copy.deepcopy(exLst))
+        writeWrktAll(cur, copy.deepcopy(exLst))
         writeWrktTags(cur, exLst)
         conn.commit();
     finally:
         cmnDAO.closeConnection(cur, conn)
 
-def writeWrkt(cur, exLst):
+def writeWrktAll(cur, exLst):
     for ex in exLst:
         wrkt_tags = ex['wrkt_tags']
         ex.pop('wrkt_tags',None)

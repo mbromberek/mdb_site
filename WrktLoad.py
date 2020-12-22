@@ -22,12 +22,19 @@ import datetime
 
 # Custom classes
 import dao.ReadLakeExercises as readEx
+import dao.ToLakeExercises as toEx
 import dao.ToWrkt as toWrkt
+import dao.ReadStgExercises as readStgEx
+import dao.ToStgExercises as toStgEx
+
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger()
 toWrkt.logger = logger
 readEx.logger = logger
+toEx.logger = logger
+readStgEx.logger = logger
+toStgEx.logger = logger
 
 def normEx(exLstOrig):
     exLstMod = []
@@ -185,13 +192,26 @@ def main():
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(os.path.join(progDir, "database.ini"))
 
+    # Read Exercises from STG
+    stgExLst = readStgEx.getExercises(dbConfig['postgresql_read'])
+    logger.info('Number of Exercises read from STG: ' + str(len(stgExLst)))
+
+    # Write Exercises to LAKE
+    lakeInsrtCt = toEx.writeExercises(dbConfig['postgresql_write'], stgExLst)
+    logger.info('Record count loaded to LAKE.EXERCISE: ' + str(lakeInsrtCt))
+    # If status is True: Delete Exercises from STG
+    if lakeInsrtCt > 0:
+        stgDelCt = toStgEx.removeExercises(dbConfig['postgresql_write'])
+        logger.info('Record count deleted from STG.EXERCISE: ' + str(stgDelCt))
+
+
     # Read Exercises from LAKE
     # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2017-05-01', end_dt='2017-12-31')
     exLst = readEx.getExercises(dbConfig['postgresql_read'])
+    logger.info('Number of Exercises read from Lake: ' + str(len(exLst)))
 
     # Normalize data in exLst to CORE format
     exNormLst = normEx(exLst)
-    logger.info('Number of Exercises read: ' + str(len(exNormLst)))
 
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
