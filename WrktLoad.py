@@ -26,6 +26,7 @@ import dao.ToLakeExercises as toEx
 import dao.ToWrkt as toWrkt
 import dao.ReadStgExercises as readStgEx
 import dao.ToStgExercises as toStgEx
+import dao.ReadCoreWrkt as readWrkt
 
 
 logging.config.fileConfig('logging.conf')
@@ -35,6 +36,7 @@ readEx.logger = logger
 toEx.logger = logger
 readStgEx.logger = logger
 toStgEx.logger = logger
+readWrkt.logger = logger
 
 def normEx(exLstOrig):
     exLstMod = []
@@ -46,7 +48,7 @@ def normEx(exLstOrig):
         ex.pop('elevation',None)
 
         # Do not want to process notes for workouts before 2017-05-01
-        if ex['wrkt_dt'] >= datetime.datetime(2017, 5,1):
+        if ex['wrkt_dt'] >= datetime.datetime(2017, 5, 1):
             notesDict = splitWeatherClothes(ex['notes'])
             if notesDict != None :
                 ex.update(splitWeather(notesDict['weatherStart'], keySuffix='_strt'))
@@ -192,6 +194,9 @@ def main():
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(os.path.join(progDir, "database.ini"))
 
+    maxCoreWrktDt = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
+    logger.info('Max CORE_FITNESS Workout date: ' + str(maxCoreWrktDt) )
+
     # Read Exercises from STG
     stgExLst = readStgEx.getExercises(dbConfig['postgresql_read'])
     logger.info('Number of Exercises read from STG: ' + str(len(stgExLst)))
@@ -206,8 +211,8 @@ def main():
 
 
     # Read Exercises from LAKE
-    # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt='2017-05-01', end_dt='2017-12-31')
-    exLst = readEx.getExercises(dbConfig['postgresql_read'])
+    # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt=datetime.datetime(2017,5,1), end_dt=datetime.datetime(2017,12,31))
+    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt=maxCoreWrktDt)
     logger.info('Number of Exercises read from Lake: ' + str(len(exLst)))
 
     # Normalize data in exLst to CORE format

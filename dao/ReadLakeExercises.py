@@ -14,6 +14,7 @@ Used for reading from Lake.Exercise table
 import os, sys
 import logging
 import logging.config
+import datetime
 
 # Third party classes
 import psycopg2
@@ -21,12 +22,18 @@ import psycopg2
 # Custom classes
 import dao.WrktCmnDAO as cmnDAO
 
-def getExercises(dbConfig, strt_dt='0001-01-01', end_dt='9999-12-31'):
+def getExercises(dbConfig, strt_dt=datetime.datetime(1,1,1), end_dt=datetime.datetime(9999,12,31)):
+    '''
+    Get Exercises from LAKE.EXERCISE table based on the optional parameters strt_dt and end_dt that are in datetime.datetime format.
+        strt_dt default: 0001-01-01
+        end_dt default: 9999-12-31
+    Returns read in exercises in a list of dictionaries
+    '''
     cur = ''
     conn = ''
     # Validate strt_dt is in format of (4{\d}-2{\d}-2{\d})
-    logger.debug('strt_dt: ' + strt_dt)
-    logger.debug('end_dt: ' + end_dt)
+    logger.debug('strt_dt: ' + str(strt_dt))
+    logger.debug('end_dt: ' + str(end_dt))
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
@@ -54,8 +61,9 @@ def readAll(cur, strt_dt, end_dt):
       , cal_burn
       , NOTES
     from lake.exercise
-    where wrkt_dt between to_date(%s,'YYYY-MM-DD') and to_date(%s,'YYYY-MM-DD')
+    where exercise.wrkt_dt > %s and exercise.wrkt_dt < %s
     ;"""
+    # where wrkt_dt between to_date(%s,'YYYY-MM-DD') and to_date(%s,'YYYY-MM-DD')
     cur.execute(selectQry, (strt_dt,end_dt,))
 
     exLst = []
