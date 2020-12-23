@@ -38,6 +38,10 @@ readStgEx.logger = logger
 toStgEx.logger = logger
 readWrkt.logger = logger
 
+dbConfig = configparser.ConfigParser()
+config = configparser.ConfigParser()
+
+
 def normEx(exLstOrig):
     exLstMod = []
     for ex in exLstOrig:
@@ -63,6 +67,7 @@ def normEx(exLstOrig):
         exLstMod.append(ex)
 
     return exLstMod
+
 
 def splitWeatherClothes(rec):
     '''
@@ -112,7 +117,6 @@ def splitWeatherClothes(rec):
     logger.debug('Clothes:' + d['clothes'])
     logger.debug('Notes:' + d['remainingNotes'])
     return d
-
 
 
 def calcWrktTags(wrkt):
@@ -185,17 +189,33 @@ def splitWeather(wethrStr, keySuffix=''):
     return wethrDict
 
 
+def getLakeReadDtRng():
+    lakeReadDtRng = {}
+    if config['lake_read']['hardcode_read_dt'] == 'Y':
+        minYr = int(config['lake_read']['min_dt'].split('-')[0])
+        minMo = int(config['lake_read']['min_dt'].split('-')[1])
+        minDay = int(config['lake_read']['min_dt'].split('-')[2])
+        lakeReadDtRng['minDt'] = datetime.datetime(minYr,minMo,minDay)
+        maxYr = int(config['lake_read']['max_dt'].split('-')[0])
+        maxMo = int(config['lake_read']['max_dt'].split('-')[1])
+        maxDay = int(config['lake_read']['max_dt'].split('-')[2])
+        lakeReadDtRng['maxDt'] = datetime.datetime(maxYr,maxMo,maxDay)
+
+    else:
+        lakeReadDtRng['minDt'] = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
+        logger.info('Max CORE_FITNESS Workout date: ' + str(lakeReadDtRng['minDt']) )
+        lakeReadDtRng['maxDt'] = datetime.datetime(9999,12,31)
+    return lakeReadDtRng
 
 
-def main():
+def processNewRecords():
     logger.info('WrktLoad Start')
 
-    dbConfig = configparser.ConfigParser()
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(os.path.join(progDir, "database.ini"))
+    config.read(os.path.join(progDir, "config.txt"))
 
-    maxCoreWrktDt = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
-    logger.info('Max CORE_FITNESS Workout date: ' + str(maxCoreWrktDt) )
+    lakeReadDtRng = getLakeReadDtRng()
 
     # Read Exercises from STG
     stgExLst = readStgEx.getExercises(dbConfig['postgresql_read'])
@@ -204,15 +224,13 @@ def main():
     # Write Exercises to LAKE
     lakeInsrtCt = toEx.writeExercises(dbConfig['postgresql_write'], stgExLst)
     logger.info('Record count loaded to LAKE.EXERCISE: ' + str(lakeInsrtCt))
-    # If status is True: Delete Exercises from STG
-    if lakeInsrtCt > 0:
+    # If records were read: Delete Exercises from STG
+    if lakeInsrtCt > 0 and config['stg']['delete_stg'] == 'Y':
         stgDelCt = toStgEx.removeExercises(dbConfig['postgresql_write'])
         logger.info('Record count deleted from STG.EXERCISE: ' + str(stgDelCt))
 
-
     # Read Exercises from LAKE
-    # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt=datetime.datetime(2017,5,1), end_dt=datetime.datetime(2017,12,31))
-    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt=maxCoreWrktDt)
+    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
     logger.info('Number of Exercises read from Lake: ' + str(len(exLst)))
 
     # Normalize data in exLst to CORE format
@@ -224,4 +242,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    processNewRecords()

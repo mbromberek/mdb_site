@@ -49,7 +49,6 @@ def readMaxDt(cur, type):
     if row[0] is None:
         result = datetime.datetime(1, 1, 1) #default result to 0001-01-01
     else:
-        print(row)
         result = row[0]
 
     return result

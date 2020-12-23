@@ -1,0 +1,7 @@
+[lake_read]
+hardcode_read_dt : N
+min_dt : 0001-01-01
+max_dt : 9999-12-31
+
+[stg]
+delete_stg : Y

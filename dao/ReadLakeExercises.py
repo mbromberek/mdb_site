@@ -32,8 +32,7 @@ def getExercises(dbConfig, strt_dt=datetime.datetime(1,1,1), end_dt=datetime.dat
     cur = ''
     conn = ''
     # Validate strt_dt is in format of (4{\d}-2{\d}-2{\d})
-    logger.debug('strt_dt: ' + str(strt_dt))
-    logger.debug('end_dt: ' + str(end_dt))
+    logger.info('Read from Lake.Exercise strt_dt: ' + str(strt_dt) + ' ' + 'end_dt: ' + str(end_dt))
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
