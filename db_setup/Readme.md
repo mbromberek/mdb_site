@@ -118,7 +118,17 @@ create table CORE_FITNESS.WRKT_TAGS (
 ## Create and setup CMN SCHEMA
 ```
 CREATE SCHEMA CMN;
-
-
-
+```
+## Create and setup apirelease table
+```
+CREATE TABLE CMN.apirelease (
+  buildtime timestamp,
+  vers varchar(30) primary key,
+  links varchar(30),
+  methods varchar(30)
+)
+;
+Insert into cmn.apirelease values ('2020-12-24 11:57:00', 'v1',
+   '/api/v1/wrkts', 'get, post, put, delete');
+select * from cmn.apirelease;
 ```
