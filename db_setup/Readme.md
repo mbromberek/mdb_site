@@ -115,3 +115,10 @@ create table CORE_FITNESS.WRKT_TAGS (
 
 
 ```
+## Create and setup CMN SCHEMA
+```
+CREATE SCHEMA CMN;
+
+
+
+```

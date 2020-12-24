@@ -1,4 +1,4 @@
-create or replace function LAKE.SEC_TO_TM_STR(SEC_VAR DECIMAL, FMT VARCHAR) returns VARCHAR
+create or replace function CMN.SEC_TO_TM_STR(SEC_VAR DECIMAL, FMT VARCHAR) returns VARCHAR
   AS
   $$
   SELECT

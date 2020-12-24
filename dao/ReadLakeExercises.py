@@ -50,9 +50,9 @@ def readAll(cur, strt_dt, end_dt):
     selectQry = """
     select
       WRKT_DT, WRKT_TYP
-      , LAKE.TM_STR_to_SEC(TOT_TM,'hms') TOT_TM_SEC
+      , CMN.TM_STR_to_SEC(TOT_TM,'hms') TOT_TM_SEC
       , DIST dist_mi
-      , LAKE.TM_STR_to_SEC(PACE,'hms') PACE_SEC
+      , CMN.TM_STR_to_SEC(PACE,'hms') PACE_SEC
       , GEAR
       , elevation
       , category
