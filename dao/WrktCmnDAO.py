@@ -8,10 +8,10 @@ All rights reserved.
 '''
 # First party classes
 import os, sys
-import configparser
 
 # Third party classes
 import psycopg2
+import configparser
 
 
 def testDbConn(cur):
