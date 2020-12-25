@@ -32,6 +32,16 @@ def getMaxWrktDt(dbConfig, type='None'):
     finally:
         cmnDAO.closeConnection(cur, conn)
 
+def getWrkt(dbConfig, wrktDt):
+    cur = ''
+    conn = ''
+
+    try:
+        conn, cur = cmnDAO.getConnection(dbConfig)
+        return(readWrkt(cur, wrktDt))
+    finally:
+        cmnDAO.closeConnection(cur, conn)
+
 def readMaxDt(cur, type):
     '''
     Parameter database cursor
@@ -52,3 +62,94 @@ def readMaxDt(cur, type):
         result = row[0]
 
     return result
+
+def getWrktAll(dbConfig):
+    selectQry = """
+    select
+      WRKT_DT
+      , WRKT_TYP
+      , tot_tm_sec
+      , dist_mi
+      , pace_sec
+      , gear
+      , temp_strt
+      , temp_feels_like_strt
+      , wethr_cond_strt
+      ,hmdty_strt
+      ,wind_speed_strt
+      ,wind_gust_strt
+      ,temp_end
+      ,temp_feels_like_end
+      ,wethr_cond_end
+      ,hmdty_end
+      ,wind_speed_end
+      ,wind_gust_end
+      ,clothes
+      ,ele_up
+      ,ele_down
+      ,hr
+      ,cal_burn
+      ,notes
+    from core_fitness.wrkt
+    ;"""
+    cur.execute(selectQry)
+
+    wrktLst = []
+    rowLst = cur.fetchall()
+    # Get list of column names
+    columns = [desc[0] for desc in cur.description]
+
+    for row in rowLst:
+        wrktLst.append(dict(zip(columns, row)))
+
+    return wrktLst
+
+def readWrkt(cur, wrktDt):
+    '''
+    Read in workouts based on passed date and returns it as a list of dictionaries
+    '''
+    selectQry = """
+    select
+      WRKT_DT
+      , WRKT_TYP
+      , tot_tm_sec
+      , dist_mi
+      , pace_sec
+      , gear
+      , tot_tm_sec
+      , dist_mi
+      , pace_sec
+      , gear
+      , temp_strt
+      , temp_feels_like_strt
+      , wethr_cond_strt
+      ,hmdty_strt
+      ,wind_speed_strt
+      ,wind_gust_strt
+      ,temp_end
+      ,temp_feels_like_end
+      ,wethr_cond_end
+      ,hmdty_end
+      ,wind_speed_end
+      ,wind_gust_end
+      ,clothes
+      ,ele_up
+      ,ele_down
+      ,hr
+      ,cal_burn
+      ,notes
+    from core_fitness.wrkt
+    where wrkt_dt = %s
+    ;"""
+
+    cur.execute(selectQry, (wrktDt, ))
+
+    wrktLst = []
+    rowLst = cur.fetchall()
+    # Get list of column names
+    columns = [desc[0] for desc in cur.description]
+
+    for row in rowLst:
+        wrktLst.append(dict(zip(columns, row)))
+
+    return wrktLst
