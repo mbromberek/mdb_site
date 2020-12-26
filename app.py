@@ -1,6 +1,7 @@
 # First party classes
 import os, sys
-# import json
+import logging
+import logging.config
 
 # Third party classes
 from flask import Flask
@@ -12,8 +13,18 @@ import configparser
 # Custom classes
 import dao.ReadApiRelease as readApi
 import dao.ReadCoreWrkt as readWrkt
+import dao.ToStgExercises as toStgEx
+import WrktLoad
 
 app = Flask(__name__)
+
+dbConfig = configparser.ConfigParser()
+progDir = os.path.dirname(os.path.abspath(__file__))
+dbConfig.read(os.path.join(progDir, "database.ini"))
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger()
+toStgEx.logger = logger
 
 @app.route('/')
 def hello():
@@ -45,6 +56,21 @@ def getLatestWrkts():
 
     return jsonify({'workout': wrkt}), 200
 
+@app.route('/api/v1/wrkts', methods=['POST'])
+def createWrkts():
+    # dbConfig = configparser.ConfigParser()
+    # progDir = os.path.dirname(os.path.abspath(__file__))
+    # dbConfig.read(os.path.join(progDir, "database.ini"))
+    #
+    # latestWrktDt = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
+    # wrkt = readWrkt.getWrkt(dbConfig['postgresql_read'], latestWrktDt)
+    #
+    # return jsonify({'workout': wrkt}), 200
+    print(request.json)
+    wrkt = request.json['workout']
+    WrktLoad.dictToStgEx([wrkt])
+    # toStgEx.writeExercises(dbConfig['postgresql_write'], [wrkt])
+    return jsonify({'new_workout':wrkt}), 201
 
 
 @app.route('/api/v1/wrktsAll', methods=['GET'])

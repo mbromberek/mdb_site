@@ -41,6 +41,31 @@ readWrkt.logger = logger
 dbConfig = configparser.ConfigParser()
 config = configparser.ConfigParser()
 
+def dictToStgEx(wrktLst):
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+    config.read(os.path.join(progDir, "config.txt"))
+
+    sntzWrktLst = []
+    for wrkt in wrktLst:
+        sntzWrkt = {}
+        sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+        sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
+        sntzWrkt['tot_tm'] = wrkt['tot_tm_sec']
+        sntzWrkt['dist'] = wrkt['dist_mi']
+        sntzWrkt['pace'] = wrkt['pace_sec']
+        sntzWrkt['notes'] = wrkt['notes']
+        sntzWrkt['category'] = 'TEST'
+        sntzWrkt['gear'] = wrkt['gear']
+        sntzWrkt['elevation'] = 0
+        sntzWrkt['hr'] = wrkt['hr']
+        sntzWrkt['cal_burn'] = wrkt['cal_burn']
+        sntzWrkt['dist_km'] = 0
+        sntzWrktLst.append(sntzWrkt)
+
+    toStgEx.writeExercises(dbConfig['postgresql_write'], sntzWrktLst)
+
+
 
 def normEx(exLstOrig):
     exLstMod = []
