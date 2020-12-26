@@ -38,7 +38,17 @@ def getWrkt(dbConfig, wrktDt):
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
-        return(readWrkt(cur, wrktDt))
+        return(readWrkt(cur, wrktDt, wrktDt))
+    finally:
+        cmnDAO.closeConnection(cur, conn)
+
+def getWrktAll(dbConfig):
+    cur = ''
+    conn = ''
+
+    try:
+        conn, cur = cmnDAO.getConnection(dbConfig)
+        return(readWrkt(cur, strtWrktDt=datetime.datetime(1,1,1), endWrktDt=datetime.datetime(9999,12,31)))
     finally:
         cmnDAO.closeConnection(cur, conn)
 
@@ -63,48 +73,7 @@ def readMaxDt(cur, type):
 
     return result
 
-def getWrktAll(dbConfig):
-    selectQry = """
-    select
-      WRKT_DT
-      , WRKT_TYP
-      , tot_tm_sec
-      , dist_mi
-      , pace_sec
-      , gear
-      , temp_strt
-      , temp_feels_like_strt
-      , wethr_cond_strt
-      ,hmdty_strt
-      ,wind_speed_strt
-      ,wind_gust_strt
-      ,temp_end
-      ,temp_feels_like_end
-      ,wethr_cond_end
-      ,hmdty_end
-      ,wind_speed_end
-      ,wind_gust_end
-      ,clothes
-      ,ele_up
-      ,ele_down
-      ,hr
-      ,cal_burn
-      ,notes
-    from core_fitness.wrkt
-    ;"""
-    cur.execute(selectQry)
-
-    wrktLst = []
-    rowLst = cur.fetchall()
-    # Get list of column names
-    columns = [desc[0] for desc in cur.description]
-
-    for row in rowLst:
-        wrktLst.append(dict(zip(columns, row)))
-
-    return wrktLst
-
-def readWrkt(cur, wrktDt):
+def readWrkt(cur, strtWrktDt, endWrktDt):
     '''
     Read in workouts based on passed date and returns it as a list of dictionaries
     '''
@@ -139,10 +108,10 @@ def readWrkt(cur, wrktDt):
       ,cal_burn
       ,notes
     from core_fitness.wrkt
-    where wrkt_dt = %s
+    where wrkt_dt >= %s and wrkt_dt <= %s
     ;"""
 
-    cur.execute(selectQry, (wrktDt, ))
+    cur.execute(selectQry, (strtWrktDt, endWrktDt, ))
 
     wrktLst = []
     rowLst = cur.fetchall()

@@ -4,6 +4,7 @@ import os, sys
 
 # Third party classes
 from flask import Flask
+from flask import request, Response
 from flask import jsonify
 import simplejson as json
 import configparser
@@ -33,7 +34,7 @@ def home_index():
 
     return jsonify({'api_version': apiLst}), 200
 
-@app.route('/api/v1/wrkts', methods=['GET'])
+@app.route('/api/v1/wrktsLatest', methods=['GET'])
 def getLatestWrkts():
     dbConfig = configparser.ConfigParser()
     progDir = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +44,18 @@ def getLatestWrkts():
     wrkt = readWrkt.getWrkt(dbConfig['postgresql_read'], latestWrktDt)
 
     return jsonify({'workout': wrkt}), 200
+
+
+
+@app.route('/api/v1/wrktsAll', methods=['GET'])
+def getWrktAll():
+    dbConfig = configparser.ConfigParser()
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+
+    wrktLst = readWrkt.getWrktAll(dbConfig['postgresql_read'])
+
+    return jsonify({'workout_list': wrktLst}), 200
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
