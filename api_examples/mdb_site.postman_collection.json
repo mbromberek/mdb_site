@@ -1,0 +1,154 @@
+{
+	"info": {
+		"_postman_id": "898051c4-b998-44e1-b4c1-a6be0d09a70f",
+		"name": "mdb_site",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api version",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{apiId}}/api/v1/info",
+					"protocol": "http",
+					"host": [
+						"{{apiId}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hello",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{apiId}}/mike",
+					"protocol": "http",
+					"host": [
+						"{{apiId}}"
+					],
+					"path": [
+						"mike"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LatestWorkout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{apiId}}/api/v1/wrktsLatest",
+					"protocol": "http",
+					"host": [
+						"{{apiId}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wrktsLatest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AllWorkouts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{apiId}}/api/v1/wrktsAll",
+					"protocol": "http",
+					"host": [
+						"{{apiId}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wrktsAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateWrkt",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"workout\": {\n\t\"cal_burn\": 649, \n\t\"clothes\": \"Tights, tank top, thin long shirt, thick long shirt, gloves, hat, face mask.\", \n\t\"dist_mi\": 6.74, \n\t\"ele_down\": 347.80, \n\t\"ele_up\": 367.50, \n\t\"gear\": \"Brooks Adrenaline v1 Black\", \n\t\"hmdty_end\": 69.00, \n\t\"hmdty_strt\": 69.00, \n\t\"hr\": 0, \n\t\"notes\": \"Was windy and in Lemont so hilly. \\nRight quad/thigh felt a little sore after 6th mile. But legs have felt fine since being done. \\nPace was slower that I would like but the cold, dark, wind, and hills it was hard to care about my pace so just went at a comfortable pace.\", \n\t\"pace_sec\": 510, \n\t\"temp_end\": 15.00, \n\t\"temp_feels_like_end\": 6.00, \n\t\"temp_feels_like_strt\": 6.00, \n\t\"temp_strt\": 15.00, \n\t\"tot_tm_sec\": 3439, \n\t\"wethr_cond_end\": \"Overcast\", \n\t\"wethr_cond_strt\": \"Overcast\", \n\t\"wind_gust_end\": 8.33, \n\t\"wind_gust_strt\": 11.33, \n\t\"wind_speed_end\": 5.58, \n\t\"wind_speed_strt\": 6.42, \n\t\"wrkt_dt\": \"Thu, 24 Dec 2020 06:00:00 GMT\", \n\t\"wrkt_typ\": \"Running\"\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{apiId}}/api/v1/wrkts",
+					"protocol": "http",
+					"host": [
+						"{{apiId}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wrkts"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "409df3bc-56cd-4c18-873c-c22e9468d772",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "97fc713a-e736-4a42-a6b5-e6889f5173c7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e0b17fd9-53ab-4301-a3e9-fe16edda35b6",
+			"key": "apiId",
+			"value": "localhost:5000",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
