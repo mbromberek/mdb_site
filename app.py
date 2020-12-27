@@ -56,25 +56,15 @@ def getLatestWrkts():
 
     return jsonify({'workout': wrkt}), 200
 
-@app.route('/api/v1/wrkts', methods=['POST'])
-def createWrkts():
-    # dbConfig = configparser.ConfigParser()
-    # progDir = os.path.dirname(os.path.abspath(__file__))
-    # dbConfig.read(os.path.join(progDir, "database.ini"))
-    #
-    # latestWrktDt = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
-    # wrkt = readWrkt.getWrkt(dbConfig['postgresql_read'], latestWrktDt)
-    #
-    # return jsonify({'workout': wrkt}), 200
-    print(request.json)
+@app.route('/api/v1/wrkt', methods=['POST'])
+def createWrkt():
     wrkt = request.json['workout']
     try:
         newWrkt = WrktLoad.dictToStgEx(wrkt)
+        newCoreWrkt = WrktLoad.processNewRecords()
     except Exception as error:
-        print(error)
         return jsonify({'status':repr(error)}), 400
-    # toStgEx.writeExercises(dbConfig['postgresql_write'], [wrkt])
-    return jsonify({'new_workout':newWrkt}), 201
+    return jsonify({'new_workout':newCoreWrkt}), 201
 
 
 @app.route('/api/v1/wrktsAll', methods=['GET'])

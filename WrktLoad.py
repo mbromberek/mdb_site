@@ -12,13 +12,13 @@ Used for loading exercise/workout data between tables
 
 # First party classes
 import os, sys
-import configparser
 import logging
 import logging.config
 import re
 import datetime
 
 # Third party classes
+import configparser
 
 # Custom classes
 import dao.ReadLakeExercises as readEx
@@ -49,15 +49,25 @@ def dictToStgEx(wrktLst):
 
     wrkt = wrktLst
     sntzWrkt = {}
+
     sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+    # if validate.vDecimal(wrkt['wrkt_dt']):
+    #     sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+    # else:
+    #     raise ValueError('Value for wrkt_dt: \'' + str(wrkt['wrkt_dt']) + '\' is not a valid date')
+
     sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
     sntzWrkt['tot_tm'] = wrkt['tot_tm']
-    sntzWrkt['dist'] = wrkt['dist_mi']
-    sntzWrkt['pace'] = wrkt['pace_sec']
+    if validate.vDecimal(wrkt['dist']):
+        sntzWrkt['dist'] = float(wrkt['dist'])
+    else:
+        raise ValueError('Value for dist: \'' + str(wrkt['dist']) + '\' is not a valid number')
+
+    sntzWrkt['pace'] = wrkt['pace']
     sntzWrkt['notes'] = wrkt['notes']
-    sntzWrkt['category'] = 'TEST'
+    sntzWrkt['category'] = wrkt['category']
     sntzWrkt['gear'] = wrkt['gear']
-    sntzWrkt['elevation'] = 0
+    sntzWrkt['elevation'] = wrkt['elevation']
     if validate.vInt(wrkt['hr']):
         sntzWrkt['hr'] = int(wrkt['hr'])
     else:
@@ -68,7 +78,10 @@ def dictToStgEx(wrktLst):
         raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
 
 
-    sntzWrkt['dist_km'] = 0
+    if validate.vDecimal(wrkt['dist_km']):
+        sntzWrkt['dist_km'] = float(wrkt['dist_km'])
+    else:
+        raise ValueError('Value for dist: \'' + str(wrkt['dist_km']) + '\' is not a valid number')
 
     toStgEx.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
     return sntzWrkt
