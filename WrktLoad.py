@@ -27,6 +27,7 @@ import dao.ToWrkt as toWrkt
 import dao.ReadStgExercises as readStgEx
 import dao.ToStgExercises as toStgEx
 import dao.ReadCoreWrkt as readWrkt
+import util.validate as validate
 
 
 logging.config.fileConfig('logging.conf')
@@ -46,24 +47,31 @@ def dictToStgEx(wrktLst):
     dbConfig.read(os.path.join(progDir, "database.ini"))
     config.read(os.path.join(progDir, "config.txt"))
 
-    sntzWrktLst = []
-    for wrkt in wrktLst:
-        sntzWrkt = {}
-        sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
-        sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
-        sntzWrkt['tot_tm'] = wrkt['tot_tm_sec']
-        sntzWrkt['dist'] = wrkt['dist_mi']
-        sntzWrkt['pace'] = wrkt['pace_sec']
-        sntzWrkt['notes'] = wrkt['notes']
-        sntzWrkt['category'] = 'TEST'
-        sntzWrkt['gear'] = wrkt['gear']
-        sntzWrkt['elevation'] = 0
-        sntzWrkt['hr'] = wrkt['hr']
+    wrkt = wrktLst
+    sntzWrkt = {}
+    sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+    sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
+    sntzWrkt['tot_tm'] = wrkt['tot_tm']
+    sntzWrkt['dist'] = wrkt['dist_mi']
+    sntzWrkt['pace'] = wrkt['pace_sec']
+    sntzWrkt['notes'] = wrkt['notes']
+    sntzWrkt['category'] = 'TEST'
+    sntzWrkt['gear'] = wrkt['gear']
+    sntzWrkt['elevation'] = 0
+    if validate.vInt(wrkt['hr']):
+        sntzWrkt['hr'] = int(wrkt['hr'])
+    else:
+        raise ValueError('Value for hr: ' + str(wrkt['hr']) + ' is not a valid Integer')
+    if validate.vInt(wrkt['cal_burn']):
         sntzWrkt['cal_burn'] = wrkt['cal_burn']
-        sntzWrkt['dist_km'] = 0
-        sntzWrktLst.append(sntzWrkt)
+    else:
+        raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
 
-    toStgEx.writeExercises(dbConfig['postgresql_write'], sntzWrktLst)
+
+    sntzWrkt['dist_km'] = 0
+
+    toStgEx.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
+    return sntzWrkt
 
 
 

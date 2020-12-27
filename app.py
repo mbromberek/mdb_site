@@ -68,9 +68,13 @@ def createWrkts():
     # return jsonify({'workout': wrkt}), 200
     print(request.json)
     wrkt = request.json['workout']
-    WrktLoad.dictToStgEx([wrkt])
+    try:
+        newWrkt = WrktLoad.dictToStgEx(wrkt)
+    except Exception as error:
+        print(error)
+        return jsonify({'status':repr(error)}), 400
     # toStgEx.writeExercises(dbConfig['postgresql_write'], [wrkt])
-    return jsonify({'new_workout':wrkt}), 201
+    return jsonify({'new_workout':newWrkt}), 201
 
 
 @app.route('/api/v1/wrktsAll', methods=['GET'])
