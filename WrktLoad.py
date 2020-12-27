@@ -272,6 +272,7 @@ def processNewRecords():
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
     logger.info('WrktLoad End')
+    return exNormLst
 
 
 if __name__ == '__main__':
