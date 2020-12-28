@@ -76,13 +76,6 @@ def dictToStgEx(wrktLst):
         sntzWrkt['cal_burn'] = wrkt['cal_burn']
     else:
         raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
-
-
-    if validate.vDecimal(wrkt['dist_km']):
-        sntzWrkt['dist_km'] = float(wrkt['dist_km'])
-    else:
-        raise ValueError('Value for dist_km: \'' + str(wrkt['dist_km']) + '\' is not a valid number')
-
     toStgEx.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
     return sntzWrkt
 
