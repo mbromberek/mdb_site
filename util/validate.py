@@ -23,7 +23,8 @@ def vDate(dtStr):
 def vDecimal(nbrStr):
     # if type(nbrStr) == int or type(nbrStr) == float:
     #     return True
-    nbrChckReg = r'^\d+\.(\d)*$'
+    # nbrChckReg = r'^\d+\.{0-1}(\d)*$'
+    nbrChckReg = r'^\d*(\.\d+)?$'
     nbrChckRslt = re.search(nbrChckReg, str(nbrStr), flags=re.IGNORECASE)
     if nbrChckRslt:
         return True

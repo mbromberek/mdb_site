@@ -58,14 +58,19 @@ def getLatestWrkts():
 
 @app.route('/api/v1/wrkt', methods=['POST'])
 def createWrkt():
+    logger.debug('createWrkt')
     wrkt = request.json['workout']
     try:
         newWrkt = WrktLoad.dictToStgEx(wrkt)
         newCoreWrkt = WrktLoad.processNewRecords()
     except Exception as error:
+        logger.error(repr(error))
         return jsonify({'status':repr(error)}), 400
     return jsonify({'new_workout':newCoreWrkt}), 201
 
+@app.route('/api/v1/wrkt', methods=['PUT'])
+def updtWrkt():
+    return jsonify({'status':'not setup'}), 418
 
 @app.route('/api/v1/wrktsAll', methods=['GET'])
 def getWrktAll():
