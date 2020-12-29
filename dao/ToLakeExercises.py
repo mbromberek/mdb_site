@@ -21,13 +21,14 @@ import psycopg2
 
 # Custom classes
 import dao.WrktCmnDAO as cmnDAO
+import dao.ReadLakeExercises as readEx
 
 def writeExercises(dbConfig, exLst):
     cur = ''
     conn = ''
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
-        insrtCt = writeExerciseAll(cur, copy.deepcopy(exLst))
+        insrtCt, updtCt = writeExerciseAll(cur, copy.deepcopy(exLst))
         conn.commit();
         return insrtCt
     except (Exception, psycopg2.DatabaseError) as error:
@@ -38,12 +39,25 @@ def writeExercises(dbConfig, exLst):
 
 def writeExerciseAll(cur, exLst):
     insrtCt = 0
+    updtCt = 0
     for ex in exLst:
         columns = ex.keys()
         values = [ex[column] for column in columns]
-        isrtStmt = 'insert into lake.exercise (%s) values %s'
+        recordExist = readEx.exerciseExists(cur, ex['wrkt_dt'], ex['wrkt_typ'])
+        if recordExist:
+            killExercise(cur, ex['wrkt_dt'], ex['wrkt_typ'])
 
+        isrtStmt = 'insert into lake.exercise (%s) values %s'
         logger.debug(cur.mogrify(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values))))
         cur.execute(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values)))
-        insrtCt = insrtCt +1
-    return insrtCt
+        if recordExist:
+            insrtCt = insrtCt +1
+        else:
+            updtCt = updtCt +1
+    return insrtCt, updtCt
+
+def killExercise(cur, wrkt_dt, wrkt_typ):
+    deleteQry = 'delete from lake.exercise where wrkt_dt = %s and wrkt_typ = %s'
+    cur.execute(deleteQry, (wrkt_dt,wrkt_typ,))
+    rowsDeleted = cur.rowcount
+    return rowsDeleted

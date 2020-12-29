@@ -32,6 +32,16 @@ def getMaxWrktDt(dbConfig, type='None'):
     finally:
         cmnDAO.closeConnection(cur, conn)
 
+def getMaxInsrtTs(dbConfig, type='None'):
+    cur = ''
+    conn = ''
+
+    try:
+        conn, cur = cmnDAO.getConnection(dbConfig)
+        return(readInsrtTs(cur, type))
+    finally:
+        cmnDAO.closeConnection(cur, conn)
+
 def getWrkt(dbConfig, wrktDt):
     cur = ''
     conn = ''
@@ -61,6 +71,26 @@ def readMaxDt(cur, type):
     selectQry = """
     select
       max(WRKT_DT) MAX_WRKT_DT
+    from core_fitness.wrkt
+    ;"""
+    cur.execute(selectQry)
+
+    row = cur.fetchone()
+    if row[0] is None:
+        result = datetime.datetime(1, 1, 1) #default result to 0001-01-01
+    else:
+        result = row[0]
+
+    return result
+def readInsrtTs(cur, type):
+    '''
+    Parameter database cursor
+    If type is None then reads all records
+    Returns max WRKT_DT of passed in type
+    '''
+    selectQry = """
+    select
+      max(insrt_ts) max_insrt_ts
     from core_fitness.wrkt
     ;"""
     cur.execute(selectQry)

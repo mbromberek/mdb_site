@@ -60,8 +60,9 @@ def readAll(cur, strt_dt, end_dt):
       , cal_burn
       , NOTES
     from lake.exercise
-    where exercise.wrkt_dt > %s and exercise.wrkt_dt < %s
+    where exercise.insrt_ts > %s and exercise.insrt_ts < %s
     ;"""
+    # where exercise.wrkt_dt > %s and exercise.wrkt_dt < %s
     # where wrkt_dt between to_date(%s,'YYYY-MM-DD') and to_date(%s,'YYYY-MM-DD')
     cur.execute(selectQry, (strt_dt,end_dt,))
 
@@ -76,3 +77,12 @@ def readAll(cur, strt_dt, end_dt):
     # print(exLst)
 
     return exLst
+
+def exerciseExists(cur, wrkt_dt, wrkt_typ):
+    selectQry = 'select count(*) ct from lake.exercise where wrkt_dt = %s and wrkt_typ = %s'
+    cur.execute(selectQry, (wrkt_dt,wrkt_typ, ))
+    result = cur.fetchone()
+    if result[0] > 0:
+        return True
+    else:
+        return False

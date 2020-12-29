@@ -80,7 +80,6 @@ def dictToStgEx(wrktLst):
     return sntzWrkt
 
 
-
 def normEx(exLstOrig):
     exLstMod = []
     for ex in exLstOrig:
@@ -241,8 +240,9 @@ def getLakeReadDtRng():
         lakeReadDtRng['maxDt'] = datetime.datetime(maxYr,maxMo,maxDay)
 
     else:
-        lakeReadDtRng['minDt'] = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
-        logger.info('Max CORE_FITNESS Workout date: ' + str(lakeReadDtRng['minDt']) )
+        # lakeReadDtRng['minDt'] = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
+        lakeReadDtRng['minDt'] = readWrkt.getMaxInsrtTs(dbConfig['postgresql_read'])
+        logger.info('Max CORE_FITNESS Insert Timestamp: ' + str(lakeReadDtRng['minDt']) )
         lakeReadDtRng['maxDt'] = datetime.datetime(9999,12,31)
     return lakeReadDtRng
 
