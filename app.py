@@ -56,7 +56,7 @@ def getLatestWrkts():
 
     return jsonify({'workout': wrkt}), 200
 
-@app.route('/api/v1/wrkt', methods=['POST'])
+@app.route('/api/v1/wrkt_sheet', methods=['POST'])
 def createWrktSheet():
     logger.debug('createWrktSheet')
     wrkt = request.json['workout']
