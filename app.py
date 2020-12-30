@@ -68,6 +68,18 @@ def createWrktSheet():
         return jsonify({'status':repr(error)}), 400
     return jsonify({'new_workout':newCoreWrkt}), 201
 
+@app.route('/api/v1/wrkt_brkdn', methods=['POST'])
+def createWrktBrkdn():
+    logger.debug('createWrktBrkdn')
+    wrkt = request.json['workout']
+    try:
+        newWrkt = WrktLoad.dictToLakeEx(wrkt)
+        # newCoreWrkt = WrktLoad.processNewRecords()
+    except Exception as error:
+        logger.error(repr(error))
+        return jsonify({'status':repr(error)}), 400
+    return jsonify({'new_workout':newWrkt}), 201
+
 @app.route('/api/v1/wrkt', methods=['PUT'])
 def updtWrkt():
     return jsonify({'status':'not setup'}), 418

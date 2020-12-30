@@ -72,7 +72,7 @@ from STG.exercise
 );
 commit;
 
-create table LAKE.EXERCISE_API (
+create table LAKE.EXERCISE_BRKDN (
     wrkt_dt timestamp without time zone,
     wrkt_typ character varying,
     tot_tm_sec integer,

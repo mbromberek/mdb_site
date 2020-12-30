@@ -26,6 +26,7 @@ import dao.ToLakeExercises as toEx
 import dao.ToWrkt as toWrkt
 import dao.ReadStgExercises as readStgEx
 import dao.ToStgExercises as toStgEx
+import dao.ToLakeExerciseBrkdn as toLakeExBrkdn
 import dao.ReadCoreWrkt as readWrkt
 import util.validate as validate
 
@@ -37,6 +38,7 @@ readEx.logger = logger
 toEx.logger = logger
 readStgEx.logger = logger
 toStgEx.logger = logger
+toLakeExBrkdn.logger = logger
 readWrkt.logger = logger
 
 dbConfig = configparser.ConfigParser()
@@ -79,6 +81,47 @@ def dictToStgEx(wrktLst):
     toStgEx.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
     return sntzWrkt
 
+
+def dictToLakeEx(wrkt):
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+    config.read(os.path.join(progDir, "config.txt"))
+
+    sntzWrkt = {}
+
+    sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+    # if validate.vDecimal(wrkt['wrkt_dt']):
+    #     sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+    # else:
+    #     raise ValueError('Value for wrkt_dt: \'' + str(wrkt['wrkt_dt']) + '\' is not a valid date')
+
+    sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
+    sntzWrkt['tot_tm_sec'] = wrkt['tot_tm_sec'] #TODO Validate is an int
+    if validate.vDecimal(wrkt['dist_mi']):
+        sntzWrkt['dist_mi'] = float(wrkt['dist_mi'])
+    else:
+        raise ValueError('Value for dist: \'' + str(wrkt['dist']) + '\' is not a valid number')
+
+    sntzWrkt['pace_sec'] = wrkt['pace_sec'] #TODO validate is an int
+    # sntzWrkt['notes'] = wrkt['notes'] #TODO Should always be empty
+    sntzWrkt['category'] = wrkt['category']
+    sntzWrkt['gear'] = wrkt['gear']
+    # sntzWrkt['elevation'] = wrkt['elevation']
+    sntzWrkt['ele_up'] = wrkt['ele_up'] #TODO validate is an int
+    sntzWrkt['ele_down'] = wrkt['ele_down'] #TODO validate is an int
+    if validate.vInt(wrkt['hr']):
+        sntzWrkt['hr'] = int(wrkt['hr'])
+    else:
+        raise ValueError('Value for hr: ' + str(wrkt['hr']) + ' is not a valid Integer')
+    if validate.vInt(wrkt['cal_burn']):
+        sntzWrkt['cal_burn'] = wrkt['cal_burn']
+    else:
+        raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
+    #TODO add Weather Start
+    #TODO add Weather End
+
+    toLakeExBrkdn.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
+    return sntzWrkt
 
 def normEx(exLstOrig):
     exLstMod = []
