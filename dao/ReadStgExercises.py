@@ -34,7 +34,7 @@ def getExercises(dbConfig):
 def readAll(cur):
     '''
     Parameter database cursor
-    Reads all records from LAKE.EXERCISE table
+    Reads all records from stg.exercise_sheet table
     Store results in list of dictionary using names of fields from SQL
     Returns exercises in list of disctionary
     '''
@@ -50,7 +50,7 @@ def readAll(cur):
       , hr
       , cal_burn
       , NOTES
-    from stg.exercise
+    from stg.exercise_sheet
     ;"""
     cur.execute(selectQry)
 

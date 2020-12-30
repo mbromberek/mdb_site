@@ -32,7 +32,7 @@ def getExercises(dbConfig, strt_dt=datetime.datetime(1,1,1), end_dt=datetime.dat
     cur = ''
     conn = ''
     # Validate strt_dt is in format of (4{\d}-2{\d}-2{\d})
-    logger.info('Read from Lake.Exercise strt_dt: ' + str(strt_dt) + ' ' + 'end_dt: ' + str(end_dt))
+    logger.info('Read from lake.exercise_sheet strt_dt: ' + str(strt_dt) + ' ' + 'end_dt: ' + str(end_dt))
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
@@ -59,8 +59,8 @@ def readAll(cur, strt_dt, end_dt):
       , hr
       , cal_burn
       , NOTES
-    from lake.exercise
-    where exercise.insrt_ts > %s and exercise.insrt_ts < %s
+    from lake.exercise_sheet
+    where exercise_sheet.insrt_ts > %s and exercise_sheet.insrt_ts < %s
     ;"""
     # where exercise.wrkt_dt > %s and exercise.wrkt_dt < %s
     # where wrkt_dt between to_date(%s,'YYYY-MM-DD') and to_date(%s,'YYYY-MM-DD')
@@ -79,7 +79,7 @@ def readAll(cur, strt_dt, end_dt):
     return exLst
 
 def exerciseExists(cur, wrkt_dt, wrkt_typ):
-    selectQry = 'select count(*) ct from lake.exercise where wrkt_dt = %s and wrkt_typ = %s'
+    selectQry = 'select count(*) ct from lake.exercise_sheet where wrkt_dt = %s and wrkt_typ = %s'
     cur.execute(selectQry, (wrkt_dt,wrkt_typ, ))
     result = cur.fetchone()
     if result[0] > 0:

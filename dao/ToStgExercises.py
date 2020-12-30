@@ -37,7 +37,7 @@ def writeExerciseAll(cur, exLst):
     for ex in exLst:
         columns = ex.keys()
         values = [ex[column] for column in columns]
-        isrtStmt = 'insert into stg.exercise (%s) values %s'
+        isrtStmt = 'insert into stg.exercise_sheet (%s) values %s'
 
         logger.debug(cur.mogrify(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values))))
         cur.execute(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values)))
@@ -54,6 +54,6 @@ def removeExercises(dbConfig):
         cmnDAO.closeConnection(cur, conn)
 
 def removeAll(cur):
-    delStmt = 'delete from stg.exercise'
+    delStmt = 'delete from stg.exercise_sheet'
     cur.execute(delStmt)
     return cur.rowcount

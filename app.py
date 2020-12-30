@@ -57,8 +57,8 @@ def getLatestWrkts():
     return jsonify({'workout': wrkt}), 200
 
 @app.route('/api/v1/wrkt', methods=['POST'])
-def createWrkt():
-    logger.debug('createWrkt')
+def createWrktSheet():
+    logger.debug('createWrktSheet')
     wrkt = request.json['workout']
     try:
         newWrkt = WrktLoad.dictToStgEx(wrkt)

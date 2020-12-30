@@ -23,7 +23,7 @@ def testDbConn(cur):
     # Read from Lake doing a Group By of week for the year to print out total mileage for the year
     selectQry = """
         select to_char(wrkt_dt,'YYYY-MM') RUN_MONTH, count(*) TOT_RUNS, sum(dist) TOT_DIST, CMN.SEC_TO_TM_STR(sum(cmn.TM_STR_to_SEC(TOT_TM,'hms')),':') TOT_TM_SEC
-        from lake.exercise
+        from lake.exercise_sheet
         where wrkt_typ in ('Running','Indoor Running') AND wrkt_dt >= to_date(%s,'YYYY-MM-DD')
         group by to_char(wrkt_dt,'YYYY-MM') order by to_char(wrkt_dt,'YYYY-MM')
         ;"""

@@ -7,7 +7,7 @@ Copyright (c) 2020, Mike Bromberek
 All rights reserved.
 '''
 '''
-Used for Insert, Update, Delete for LAKE.EXERCISE table
+Used for Insert, Update, Delete for LAKE.EXERCISE_SHEET table
 '''
 
 # First party classes
@@ -47,7 +47,7 @@ def writeExerciseAll(cur, exLst):
         if recordExist:
             killExercise(cur, ex['wrkt_dt'], ex['wrkt_typ'])
 
-        isrtStmt = 'insert into lake.exercise (%s) values %s'
+        isrtStmt = 'insert into lake.exercise_sheet (%s) values %s'
         logger.debug(cur.mogrify(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values))))
         cur.execute(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values)))
         if recordExist:
@@ -57,7 +57,7 @@ def writeExerciseAll(cur, exLst):
     return insrtCt, updtCt
 
 def killExercise(cur, wrkt_dt, wrkt_typ):
-    deleteQry = 'delete from lake.exercise where wrkt_dt = %s and wrkt_typ = %s'
+    deleteQry = 'delete from lake.exercise_sheet where wrkt_dt = %s and wrkt_typ = %s'
     cur.execute(deleteQry, (wrkt_dt,wrkt_typ,))
     rowsDeleted = cur.rowcount
     return rowsDeleted

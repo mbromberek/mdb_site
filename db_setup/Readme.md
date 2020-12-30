@@ -19,7 +19,7 @@ pg_ctl -D /usr/local/var/postgres start && brew services start postgresql
 mdb=# CREATE DATABASE mdb;
 mdb=# \connect mdb #connect to DB mdb
 mdb=# CREATE SCHEMA STG;
-mdb=# CREATE TABLE STG.EXERCISE (
+mdb=# CREATE TABLE STG.EXERCISE_SHEET (
     wrkt_dt timestamp without time zone,
     wrkt_typ character varying,
     tot_tm character varying,
@@ -47,7 +47,7 @@ mdb=# select * from STG.EXERCISE;
 ## Create and Load data to LAKE.Exercise
 ```
 CREATE SCHEMA LAKE;
-CREATE TABLE LAKE.EXERCISE (
+CREATE TABLE LAKE.EXERCISE_SHEET (
     wrkt_dt timestamp without time zone PRIMARY KEY UNIQUE,
     wrkt_typ character varying,
     tot_tm character varying,
@@ -71,7 +71,37 @@ insert into LAKE.exercise
 from STG.exercise
 );
 commit;
-select * from LAKE.exercise;
+
+create table LAKE.EXERCISE_API (
+    wrkt_dt timestamp without time zone,
+    wrkt_typ character varying,
+    tot_tm_sec integer,
+    dist_mi numeric(5,2),
+    pace_sec integer,
+    gear character varying,
+    temp_strt numeric(8,2),
+    temp_feels_like_strt numeric(8,2),
+    wethr_cond_strt character varying,
+    hmdty_strt numeric(8,2),
+    wind_speed_strt numeric(8,2),
+    wind_gust_strt numeric(8,2),
+    temp_end numeric(8,2),
+    temp_feels_like_end numeric(8,2),
+    wethr_cond_end character varying,
+    hmdty_end numeric(8,2),
+    wind_speed_end numeric(8,2),
+    wind_gust_end numeric(8,2),
+    clothes character varying,
+    ele_up numeric(8,2),
+    ele_down numeric(8,2),
+    hr smallint,
+    cal_burn integer,
+    notes character varying,
+    category character varying,
+    insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT wrkt_pkey PRIMARY KEY (wrkt_dt, wrkt_typ)
+);
+
 ```
 
 ## Create and setup Core schema and tables
