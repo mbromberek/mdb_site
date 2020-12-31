@@ -27,6 +27,7 @@ import dao.ToWrkt as toWrkt
 import dao.ReadStgExercises as readStgEx
 import dao.ToStgExercises as toStgEx
 import dao.ToLakeExerciseBrkdn as toLakeExBrkdn
+import dao.ReadLakeExerciseBrkdn as readExBrkdn
 import dao.ReadCoreWrkt as readWrkt
 import util.validate as validate
 
@@ -40,6 +41,7 @@ readStgEx.logger = logger
 toStgEx.logger = logger
 toLakeExBrkdn.logger = logger
 readWrkt.logger = logger
+readExBrkdn.logger = logger
 
 dbConfig = configparser.ConfigParser()
 config = configparser.ConfigParser()
@@ -321,6 +323,32 @@ def processNewRecords():
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
     logger.info('WrktLoad End')
+    return exNormLst
+
+def processNewBrkdnRecords():
+    logger.info('processNewBrkdnRecords Start')
+
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+    config.read(os.path.join(progDir, "config.txt"))
+
+    lakeReadDtRng = getLakeReadDtRng()
+
+    # Read Exercises from LAKE
+    exLst = readExBrkdn.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
+    logger.info('Number of Exercises read from Lake: ' + str(len(exLst)))
+
+    # Normalize data in exLst to CORE format
+    # exNormLst = normEx(exLst)
+    exNormLst = []
+    for ex in exLst:
+        ex['wrkt_tags'] = calcWrktTags(ex)
+        ex.pop('category',None)
+        exNormLst.append(ex)
+
+    # Write Exercises to CORE_FITNESS
+    toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
+    logger.info('processNewBrkdnRecords End')
     return exNormLst
 
 

@@ -32,7 +32,7 @@ def getExercises(dbConfig, strt_dt=datetime.datetime(1,1,1), end_dt=datetime.dat
     cur = ''
     conn = ''
     # Validate strt_dt is in format of (4{\d}-2{\d}-2{\d})
-    logger.info('Read from lake.exercise_sheet strt_dt: ' + str(strt_dt) + ' ' + 'end_dt: ' + str(end_dt))
+    logger.info('Read from lake.exercise_brkdn strt_dt: ' + str(strt_dt) + ' ' + 'end_dt: ' + str(end_dt))
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
@@ -43,24 +43,28 @@ def getExercises(dbConfig, strt_dt=datetime.datetime(1,1,1), end_dt=datetime.dat
 def readAll(cur, strt_dt, end_dt):
     '''
     Parameter database cursor
-    Reads all records from LAKE.EXERCISE table
+    Reads all records from LAKE.EXERCISE_BRKDN table
     Store results in list of dictionary using names of fields from SQL
     Returns exercises in list of disctionary
     '''
     selectQry = """
     select
       WRKT_DT, WRKT_TYP
-      , CMN.TM_STR_to_SEC(TOT_TM,'hms') TOT_TM_SEC
-      , DIST dist_mi
-      , CMN.TM_STR_to_SEC(PACE,'hms') PACE_SEC
+      , TOT_TM_SEC
+      , dist_mi
+      , PACE_SEC
       , GEAR
-      , elevation
+      , ele_up, ele_down
       , category
       , hr
       , cal_burn
       , NOTES
+      , temp_strt, temp_feels_like_strt, wethr_cond_strt
+      , hmdty_strt, wind_speed_strt, wind_gust_strt
+      , temp_end, temp_feels_like_end, wethr_cond_end
+      , hmdty_end, wind_speed_end, wind_gust_end
     from lake.exercise_brkdn
-    where exercise_sheet.insrt_ts > %s and exercise_sheet.insrt_ts < %s
+    where exercise_brkdn.insrt_ts > %s and exercise_brkdn.insrt_ts < %s
     ;"""
     # where exercise.wrkt_dt > %s and exercise.wrkt_dt < %s
     # where wrkt_dt between to_date(%s,'YYYY-MM-DD') and to_date(%s,'YYYY-MM-DD')
