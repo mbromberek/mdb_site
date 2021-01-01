@@ -119,8 +119,20 @@ def dictToLakeEx(wrkt):
         sntzWrkt['cal_burn'] = wrkt['cal_burn']
     else:
         raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
-    #TODO add Weather Start
-    #TODO add Weather End
+
+    #TODO setup validation of fields
+    sntzWrkt['temp_strt'] = wrkt['wethr_start']['temp']
+    sntzWrkt['temp_feels_like_strt'] = wrkt['wethr_start']['temp_feels_like']
+    sntzWrkt['wethr_cond_strt'] = wrkt['wethr_start']['cond']
+    sntzWrkt['hmdty_strt'] = wrkt['wethr_start']['hmdty']
+    sntzWrkt['wind_speed_strt'] = wrkt['wethr_start']['wind_speed']
+    sntzWrkt['wind_gust_strt'] = wrkt['wethr_start']['wind_gust']
+    sntzWrkt['temp_end'] = wrkt['wethr_end']['temp']
+    sntzWrkt['temp_feels_like_end'] = wrkt['wethr_end']['temp_feels_like']
+    sntzWrkt['wethr_cond_end'] = wrkt['wethr_end']['cond']
+    sntzWrkt['hmdty_end'] = wrkt['wethr_end']['hmdty']
+    sntzWrkt['wind_speed_end'] = wrkt['wethr_end']['wind_speed']
+    sntzWrkt['wind_gust_end'] = wrkt['wethr_end']['wind_gust']
 
     toLakeExBrkdn.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
     return sntzWrkt
