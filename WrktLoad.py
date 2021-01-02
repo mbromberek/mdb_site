@@ -28,6 +28,7 @@ import dao.ReadStgExercises as readStgEx
 import dao.ToStgExercises as toStgEx
 import dao.ToLakeExerciseBrkdn as toLakeExBrkdn
 import dao.ReadLakeExerciseBrkdn as readExBrkdn
+import dao.ReadLakeExerciseMerge as readLakeExMerge
 import dao.ReadCoreWrkt as readWrkt
 import util.validate as validate
 import util.normalizeLakeData as normData
@@ -44,6 +45,7 @@ toLakeExBrkdn.logger = logger
 readWrkt.logger = logger
 readExBrkdn.logger = logger
 normData.logger = logger
+readLakeExMerge.logger = logger
 
 dbConfig = configparser.ConfigParser()
 config = configparser.ConfigParser()
@@ -113,6 +115,10 @@ def dictToLakeEx(wrkt):
     # sntzWrkt['elevation'] = wrkt['elevation']
     sntzWrkt['ele_up'] = wrkt['ele_up'] #TODO validate is an int
     sntzWrkt['ele_down'] = wrkt['ele_down'] #TODO validate is an int
+
+    if 'clothes' in wrkt:
+        sntzWrkt['clothes'] = wrkt['clothes']
+
     if validate.vInt(wrkt['hr']):
         sntzWrkt['hr'] = int(wrkt['hr'])
     else:
@@ -203,16 +209,18 @@ def processNewBrkdnRecords():
     lakeReadDtRng = getLakeReadDtRng()
 
     # Read Exercises from LAKE
-    exLst = readExBrkdn.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
+    # exLst = readExBrkdn.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
+    exLst = readLakeExMerge.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
+
     logger.info('Number of Exercises read from Lake: ' + str(len(exLst)))
 
     # Normalize data in exLst to CORE format
-    # exNormLst = normEx(exLst)
-    exNormLst = []
-    for ex in exLst:
-        ex['wrkt_tags'] = calcWrktTags(ex)
-        ex.pop('category',None)
-        exNormLst.append(ex)
+    exNormLst = normData.normLakeExMerge(exLst)
+    # exNormLst = []
+    # for ex in exLst:
+    #     ex['wrkt_tags'] = calcWrktTags(ex)
+    #     ex.pop('category',None)
+    #     exNormLst.append(ex)
 
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)

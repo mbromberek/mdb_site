@@ -72,6 +72,7 @@ def createWrktSheet():
 def createWrktBrkdn():
     logger.debug('createWrktBrkdn')
     wrkt = request.json['workout']
+    logger.debug(wrkt)
     try:
         newWrkt = WrktLoad.dictToLakeEx(wrkt)
         newCoreWrkt = WrktLoad.processNewBrkdnRecords()

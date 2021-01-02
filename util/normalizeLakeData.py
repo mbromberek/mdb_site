@@ -15,10 +15,82 @@ import logging
 import logging.config
 import datetime, time
 import re
+import copy
 
 # Third party classes
 # Custom classes
 
+def normLakeExMerge(exLstOrig):
+    exLstMod = []
+    for ex in exLstOrig:
+        exNorm = {}
+        exNorm['wrkt_dt'] = ex['wrkt_dt']
+        exNorm['wrkt_typ'] = ex['wrkt_typ']
+
+        exNorm['tot_tm_sec'] = ex['tot_tm_sec']
+        exNorm['dist_mi'] = ex['dist_mi']
+        exNorm['pace_sec'] = ex['pace_sec']
+        exNorm['gear'] = ex['gear']
+        exNorm['hr'] = ex['hr']
+        exNorm['cal_burn'] = ex['cal_burn']
+
+        if ex['wrkt_dt'] >= datetime.datetime(2017, 5, 1):
+            notesDict = splitWeatherClothes(ex['notes'])
+        else:
+            notesDict = None
+
+        # Determine source for weather
+        if ex['temp_strt'] is not None:
+            logger.debug('temp from API')
+            exNorm['temp_strt'] = ex['temp_strt']
+            exNorm['temp_feels_like_strt'] = ex['temp_feels_like_strt']
+            exNorm['wethr_cond_strt'] = ex['wethr_cond_strt']
+            exNorm['hmdty_strt'] = ex['hmdty_strt']
+            exNorm['wind_speed_strt'] = ex['wind_speed_strt']
+            exNorm['wind_gust_strt'] = ex['wind_gust_strt']
+            exNorm['temp_end'] = ex['temp_end']
+            exNorm['temp_feels_like_end'] = ex['temp_feels_like_end']
+            exNorm['wethr_cond_end'] = ex['wethr_cond_end']
+            exNorm['hmdty_end'] = ex['hmdty_end']
+            exNorm['wind_speed_end'] = ex['wind_speed_end']
+            exNorm['wind_gust_end'] = ex['wind_gust_end']
+        elif notesDict != None:
+            logger.debug('temp from SHEET')
+            exNorm.update(splitWeather(notesDict['weatherStart'], keySuffix='_strt'))
+            exNorm.update(splitWeather(notesDict['weatherEnd'], keySuffix='_end'))
+
+        # Deterine source for clothes
+        if ex['clothes'] is not None:
+            logger.debug('clothes from API:' + str(ex['clothes']))
+            exNorm['clothes'] = ex['clothes']
+        elif notesDict != None:
+            logger.debug('clothes from SHEET')
+            exNorm['clothes'] = notesDict['clothes']
+        else:
+            logger.info('clothes is null')
+            exNorm['clothes'] = None
+
+        # Determine source for elevation
+        if ex['ele_up'] is None:
+            if ex['elevation'] != None:
+                exNorm['ele_up'] = ex['elevation'].split('↑')[0]
+                exNorm['ele_down'] = ex['elevation'].split('↑')[1].split('↓')[0]
+        else:
+            exNorm['ele_up'] = ex['ele_up']
+            exNorm['ele_down'] = ex['ele_down']
+
+        # Breakup notes if needed
+        if notesDict != None:
+            exNorm['notes'] = notesDict['remainingNotes']
+        else:
+            exNorm['notes'] = ex['notes']
+
+        exNorm['wrkt_tags'] = calcWrktTags(ex)
+        logger.info(exNorm)
+
+        exLstMod.append(exNorm)
+
+    return exLstMod
 
 def normExSheet(exLstOrig):
     exLstMod = []

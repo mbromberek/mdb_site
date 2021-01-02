@@ -51,9 +51,9 @@ def readAll(cur, strt_dt, end_dt):
     select
       coalesce(sheet.wrkt_dt, brkdn.wrkt_dt) wrkt_dt
       , coalesce(sheet.wrkt_typ, brkdn.wrkt_typ) wrkt_typ
-      , brkdn.tot_tm_sec, sheet.tot_tm
+      , coalesce(cmn.tm_str_to_sec(sheet.tot_tm,'hms'), brkdn.tot_tm_sec) tot_tm_sec
       , coalesce(sheet.dist, brkdn.dist_mi) dist_mi
-      , brkdn.pace_sec, sheet.pace
+      , coalesce(cmn.tm_str_to_sec(sheet.pace, 'hms'), brkdn.pace_sec) pace_sec
       , coalesce(sheet.gear, brkdn.gear) gear
       , brkdn.ele_up, brkdn.ele_down, sheet.elevation
       , brkdn.clothes
@@ -66,10 +66,10 @@ def readAll(cur, strt_dt, end_dt):
       , brkdn.temp_end, brkdn.temp_feels_like_end, brkdn.wethr_cond_end
       , brkdn.hmdty_end, brkdn.wind_speed_end, brkdn.wind_gust_end
     from lake.exercise_sheet sheet
-    inner join lake.exercise_brkdn brkdn
+    full outer join lake.exercise_brkdn brkdn
       on sheet.wrkt_dt = brkdn.wrkt_dt
       and sheet.wrkt_typ = brkdn.wrkt_typ
-    where coalesce(sheet.wrkt_dt, brkdn.wrkt_dt) between %s and %s
+    where greatest(sheet.insrt_ts, brkdn.insrt_ts) between %s and %s
     order by sheet.wrkt_dt asc
     ;
     """
