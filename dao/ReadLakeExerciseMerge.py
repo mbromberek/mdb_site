@@ -49,23 +49,32 @@ def readAll(cur, strt_dt, end_dt):
     '''
     selectQry = """
     select
-      WRKT_DT, WRKT_TYP
-      , TOT_TM_SEC
-      , dist_mi
-      , PACE_SEC
-      , GEAR
-      , ele_up, ele_down
-      , category
-      , hr
-      , cal_burn
-      , NOTES
-      , temp_strt, temp_feels_like_strt, wethr_cond_strt
-      , hmdty_strt, wind_speed_strt, wind_gust_strt
-      , temp_end, temp_feels_like_end, wethr_cond_end
-      , hmdty_end, wind_speed_end, wind_gust_end
-    from lake.exercise_brkdn
-    where exercise_brkdn.insrt_ts > %s and exercise_brkdn.insrt_ts < %s
-    ;"""
+      coalesce(sheet.wrkt_dt, brkdn.wrkt_dt) wrkt_dt
+      , coalesce(sheet.wrkt_typ, brkdn.wrkt_typ) wrkt_typ
+      , brkdn.tot_tm_sec, sheet.tot_tm
+      , coalesce(sheet.dist, brkdn.dist_mi) dist_mi
+      , brkdn.pace_sec, sheet.pace
+      , coalesce(sheet.gear, brkdn.gear) gear
+      , brkdn.ele_up, brkdn.ele_down, sheet.elevation
+      , brkdn.clothes
+      , coalesce(sheet.notes, brkdn.notes) notes
+      , coalesce(sheet.hr, brkdn.hr) hr
+      , coalesce(sheet.cal_burn, brkdn.cal_burn) cal_burn
+      , coalesce(sheet.category, brkdn.category) category
+      , brkdn.temp_strt, brkdn.temp_feels_like_strt, brkdn.wethr_cond_strt
+      , brkdn.hmdty_strt, brkdn.wind_speed_strt, brkdn.wind_gust_strt
+      , brkdn.temp_end, brkdn.temp_feels_like_end, brkdn.wethr_cond_end
+      , brkdn.hmdty_end, brkdn.wind_speed_end, brkdn.wind_gust_end
+    from lake.exercise_sheet sheet
+    inner join lake.exercise_brkdn brkdn
+      on sheet.wrkt_dt = brkdn.wrkt_dt
+      and sheet.wrkt_typ = brkdn.wrkt_typ
+    where coalesce(sheet.wrkt_dt, brkdn.wrkt_dt) between %s and %s
+    order by sheet.wrkt_dt asc
+    ;
+    """
+    # where coalesce(sheet.wrkt_dt, brkdn.wrkt_dt) between to_date('2020-12-31 00:00:00','YYYY-MM-DD HH24:MI:SS') and to_date('9999-12-31 00:00:00','YYYY-MM-DD HH24:MI:SS')
+
     cur.execute(selectQry, (strt_dt,end_dt,))
 
     exLst = []
@@ -79,12 +88,3 @@ def readAll(cur, strt_dt, end_dt):
     # print(exLst)
 
     return exLst
-
-def exerciseExists(cur, wrkt_dt, wrkt_typ):
-    selectQry = 'select count(*) ct from lake.exercise_brkdn where wrkt_dt = %s and wrkt_typ = %s'
-    cur.execute(selectQry, (wrkt_dt,wrkt_typ, ))
-    result = cur.fetchone()
-    if result[0] > 0:
-        return True
-    else:
-        return False
