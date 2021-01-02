@@ -25,6 +25,7 @@ dbConfig.read(os.path.join(progDir, "database.ini"))
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger()
 toStgEx.logger = logger
+readWrkt.logger = logger
 
 @app.route('/')
 def hello():
@@ -94,6 +95,17 @@ def getWrktAll():
     wrktLst = readWrkt.getWrktAll(dbConfig['postgresql_read'])
 
     return jsonify({'workout_list': wrktLst}), 200
+
+@app.route('/api/v1/comparePace', methods=['GET'])
+def compareWrktPace():
+    dbConfig = configparser.ConfigParser()
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+    wrkt = request.json['workout']
+
+    wrkt_compare = readWrkt.comparePace(dbConfig['postgresql_read'], wrkt)
+
+    return jsonify({'workout_compare': wrkt_compare}), 200
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
