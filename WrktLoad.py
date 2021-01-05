@@ -55,37 +55,42 @@ def dictToStgEx(wrktLst):
     dbConfig.read(os.path.join(progDir, "database.ini"))
     config.read(os.path.join(progDir, "config.txt"))
 
-    wrkt = wrktLst
-    sntzWrkt = {}
+    # wrkt = wrktLst
+    sntzWrktLst = []
+    for wrkt in wrktLst:
+        sntzWrkt = {}
 
-    sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
-    # if validate.vDecimal(wrkt['wrkt_dt']):
-    #     sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
-    # else:
-    #     raise ValueError('Value for wrkt_dt: \'' + str(wrkt['wrkt_dt']) + '\' is not a valid date')
+        sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+        # if validate.vDecimal(wrkt['wrkt_dt']):
+        #     sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+        # else:
+        #     raise ValueError('Value for wrkt_dt: \'' + str(wrkt['wrkt_dt']) + '\' is not a valid date')
 
-    sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
-    sntzWrkt['tot_tm'] = wrkt['tot_tm']
-    if validate.vDecimal(wrkt['dist']):
-        sntzWrkt['dist'] = float(wrkt['dist'])
-    else:
-        raise ValueError('Value for dist: \'' + str(wrkt['dist']) + '\' is not a valid number')
+        sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
+        sntzWrkt['tot_tm'] = wrkt['tot_tm']
+        if validate.vDecimal(wrkt['dist']):
+            sntzWrkt['dist'] = float(wrkt['dist'])
+        else:
+            raise ValueError('Value for dist: \'' + str(wrkt['dist']) + '\' is not a valid number')
 
-    sntzWrkt['pace'] = wrkt['pace']
-    sntzWrkt['notes'] = wrkt['notes']
-    sntzWrkt['category'] = wrkt['category']
-    sntzWrkt['gear'] = wrkt['gear']
-    sntzWrkt['elevation'] = wrkt['elevation']
-    if validate.vInt(wrkt['hr']):
-        sntzWrkt['hr'] = int(wrkt['hr'])
-    else:
-        raise ValueError('Value for hr: ' + str(wrkt['hr']) + ' is not a valid Integer')
-    if validate.vInt(wrkt['cal_burn']):
-        sntzWrkt['cal_burn'] = wrkt['cal_burn']
-    else:
-        raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
-    toStgEx.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
-    return sntzWrkt
+        sntzWrkt['pace'] = wrkt['pace']
+        sntzWrkt['notes'] = wrkt['notes']
+        sntzWrkt['category'] = wrkt['category']
+        sntzWrkt['gear'] = wrkt['gear']
+        sntzWrkt['elevation'] = wrkt['elevation']
+        if validate.vInt(wrkt['hr']):
+            sntzWrkt['hr'] = int(wrkt['hr'])
+        else:
+            raise ValueError('Value for hr: ' + str(wrkt['hr']) + ' is not a valid Integer')
+        if validate.vInt(wrkt['cal_burn']):
+            sntzWrkt['cal_burn'] = wrkt['cal_burn']
+        else:
+            raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
+        sntzWrktLst.append(sntzWrkt)
+
+    toStgEx.writeExercises(dbConfig['postgresql_write'], sntzWrktLst)
+
+    return sntzWrktLst
 
 
 def dictToLakeEx(wrkt):

@@ -60,14 +60,14 @@ def getLatestWrkts():
 @app.route('/api/v1/wrkt_sheet', methods=['POST'])
 def createWrktSheet():
     logger.debug('createWrktSheet')
-    wrkt = request.json['workout']
+    wrktLst = request.json['workouts']
     try:
-        newWrkt = WrktLoad.dictToStgEx(wrkt)
-        newCoreWrkt = WrktLoad.processNewRecords()
+        newWrktLst = WrktLoad.dictToStgEx(wrktLst)
+        newCoreWrktLst = WrktLoad.processNewRecords()
     except Exception as error:
         logger.error(repr(error))
         return jsonify({'status':repr(error)}), 400
-    return jsonify({'new_workout':newCoreWrkt}), 201
+    return jsonify({'new_workouts':newCoreWrktLst}), 201
 
 @app.route('/api/v1/wrkt_brkdn', methods=['POST'])
 def createWrktBrkdn():
