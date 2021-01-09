@@ -133,7 +133,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"workout\": {\n\t\"cal_burn\": 649, \n\t\"category\":\"Training\",\n\t\"clothes\": \"Tights, tank top, thin long shirt, thick long shirt, gloves, hat, face mask.\", \n\t\"dist_mi\": 6.61, \n\t\"ele_up\": 200.10,\n\t\"ele_down\": 200.20,\n\t\"gear\": \"Brooks Adrenaline v1 Black\", \n\t\"hr\": 155, \n\t\"notes\": \"\", \n\t\"pace_sec\": 444, \n\t\"tot_tm_sec\": 2938, \n\t\"wrkt_dt\": \"12/29/2020 10:43:51 AM\", \n\t\"wrkt_typ\": \"Running\",\n\t\"wethr_start\": {\n\t\t\"temp\": 26.81, \"temp_feels_like\": 17.05, \n\t\t\"cond\": \"Overcast\", \"hmdty\": 0.75, \"wind_speed\": 10.46, \"wind_gust\": 21.27 \n\t},\n\t\"wethr_end\": {\n\t\t\"temp\": 27.78, \"temp_feels_like\": 17.12, \n\t\t\"cond\": \"Overcast\", \"hmdty\": 0.73, \"wind_speed\": 12.78, \"wind_gust\": 23.42\n\t}\n  }\n}\n",
+					"raw": "{\n  \"workouts\": [\n    {\n\t\"cal_burn\": 649, \n\t\"category\":\"Training\",\n\t\"clothes\": \"Tights, tank top, thin long shirt, thick long shirt, gloves, hat, face mask.\", \n\t\"dist_mi\": 6.61, \n\t\"ele_up\": 200.10,\n\t\"ele_down\": 200.20,\n\t\"gear\": \"Brooks Adrenaline v1 Black\", \n\t\"hr\": 155, \n\t\"notes\": \"\", \n\t\"pace_sec\": 444, \n\t\"tot_tm_sec\": 2938, \n\t\"wrkt_dt\": \"12/29/2020 10:43:51 AM\", \n\t\"wrkt_typ\": \"Running\",\n\t\"wethr_start\": {\n\t\t\"temp\": 26.81, \"temp_feels_like\": 17.05, \n\t\t\"cond\": \"Overcast\", \"hmdty\": 0.75, \"wind_speed\": 10.46, \"wind_gust\": 21.27 \n\t},\n\t\"wethr_end\": {\n\t\t\"temp\": 27.78, \"temp_feels_like\": 17.12, \n\t\t\"cond\": \"Overcast\", \"hmdty\": 0.73, \"wind_speed\": 12.78, \"wind_gust\": 23.42\n\t}\n  }\n  ]\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"

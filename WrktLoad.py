@@ -93,63 +93,67 @@ def dictToStgEx(wrktLst):
     return sntzWrktLst
 
 
-def dictToLakeEx(wrkt):
+def dictToLakeEx(wrktLst):
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(os.path.join(progDir, "database.ini"))
     config.read(os.path.join(progDir, "config.txt"))
 
-    sntzWrkt = {}
+    sntzWrktLst = []
+    for wrkt in wrktLst:
+        sntzWrkt = {}
 
-    sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
-    # if validate.vDecimal(wrkt['wrkt_dt']):
-    #     sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
-    # else:
-    #     raise ValueError('Value for wrkt_dt: \'' + str(wrkt['wrkt_dt']) + '\' is not a valid date')
+        sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+        # if validate.vDecimal(wrkt['wrkt_dt']):
+        #     sntzWrkt['wrkt_dt'] = wrkt['wrkt_dt']
+        # else:
+        #     raise ValueError('Value for wrkt_dt: \'' + str(wrkt['wrkt_dt']) + '\' is not a valid date')
 
-    sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
-    sntzWrkt['tot_tm_sec'] = wrkt['tot_tm_sec'] #TODO Validate is an int
-    if validate.vDecimal(wrkt['dist_mi']):
-        sntzWrkt['dist_mi'] = float(wrkt['dist_mi'])
-    else:
-        raise ValueError('Value for dist: \'' + str(wrkt['dist']) + '\' is not a valid number')
+        sntzWrkt['wrkt_typ'] = wrkt['wrkt_typ']
+        sntzWrkt['tot_tm_sec'] = wrkt['tot_tm_sec'] #TODO Validate is an int
+        if validate.vDecimal(wrkt['dist_mi']):
+            sntzWrkt['dist_mi'] = float(wrkt['dist_mi'])
+        else:
+            raise ValueError('Value for dist: \'' + str(wrkt['dist']) + '\' is not a valid number')
 
-    sntzWrkt['pace_sec'] = wrkt['pace_sec'] #TODO validate is an int
-    # sntzWrkt['notes'] = wrkt['notes'] #TODO Should always be empty
-    sntzWrkt['category'] = wrkt['category']
-    sntzWrkt['gear'] = wrkt['gear']
-    # sntzWrkt['elevation'] = wrkt['elevation']
-    sntzWrkt['ele_up'] = wrkt['ele_up'] #TODO validate is an int
-    sntzWrkt['ele_down'] = wrkt['ele_down'] #TODO validate is an int
+        sntzWrkt['pace_sec'] = wrkt['pace_sec'] #TODO validate is an int
+        # sntzWrkt['notes'] = wrkt['notes'] #TODO Should always be empty
+        sntzWrkt['category'] = wrkt['category']
+        sntzWrkt['gear'] = wrkt['gear']
+        # sntzWrkt['elevation'] = wrkt['elevation']
+        sntzWrkt['ele_up'] = wrkt['ele_up'] #TODO validate is an int
+        sntzWrkt['ele_down'] = wrkt['ele_down'] #TODO validate is an int
 
-    if 'clothes' in wrkt:
-        sntzWrkt['clothes'] = wrkt['clothes']
+        if 'clothes' in wrkt:
+            sntzWrkt['clothes'] = wrkt['clothes']
 
-    if validate.vInt(wrkt['hr']):
-        sntzWrkt['hr'] = int(wrkt['hr'])
-    else:
-        raise ValueError('Value for hr: ' + str(wrkt['hr']) + ' is not a valid Integer')
-    if validate.vInt(wrkt['cal_burn']):
-        sntzWrkt['cal_burn'] = wrkt['cal_burn']
-    else:
-        raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
+        if validate.vInt(wrkt['hr']):
+            sntzWrkt['hr'] = int(wrkt['hr'])
+        else:
+            raise ValueError('Value for hr: ' + str(wrkt['hr']) + ' is not a valid Integer')
+        if validate.vInt(wrkt['cal_burn']):
+            sntzWrkt['cal_burn'] = wrkt['cal_burn']
+        else:
+            raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
 
-    #TODO setup validation of fields
-    if 'wethr_start' in  wrkt:
-        sntzWrkt['temp_strt'] = wrkt['wethr_start']['temp']
-        sntzWrkt['temp_feels_like_strt'] = wrkt['wethr_start']['temp_feels_like']
-        sntzWrkt['wethr_cond_strt'] = wrkt['wethr_start']['cond']
-        sntzWrkt['hmdty_strt'] = wrkt['wethr_start']['hmdty']
-        sntzWrkt['wind_speed_strt'] = wrkt['wethr_start']['wind_speed']
-        sntzWrkt['wind_gust_strt'] = wrkt['wethr_start']['wind_gust']
-    if 'wethr_end' in  wrkt:
-        sntzWrkt['temp_end'] = wrkt['wethr_end']['temp']
-        sntzWrkt['temp_feels_like_end'] = wrkt['wethr_end']['temp_feels_like']
-        sntzWrkt['wethr_cond_end'] = wrkt['wethr_end']['cond']
-        sntzWrkt['hmdty_end'] = wrkt['wethr_end']['hmdty']
-        sntzWrkt['wind_speed_end'] = wrkt['wethr_end']['wind_speed']
-        sntzWrkt['wind_gust_end'] = wrkt['wethr_end']['wind_gust']
+        #TODO setup validation of fields
+        if 'wethr_start' in  wrkt:
+            sntzWrkt['temp_strt'] = wrkt['wethr_start']['temp']
+            sntzWrkt['temp_feels_like_strt'] = wrkt['wethr_start']['temp_feels_like']
+            sntzWrkt['wethr_cond_strt'] = wrkt['wethr_start']['cond']
+            sntzWrkt['hmdty_strt'] = wrkt['wethr_start']['hmdty']
+            sntzWrkt['wind_speed_strt'] = wrkt['wethr_start']['wind_speed']
+            sntzWrkt['wind_gust_strt'] = wrkt['wethr_start']['wind_gust']
+        if 'wethr_end' in  wrkt:
+            sntzWrkt['temp_end'] = wrkt['wethr_end']['temp']
+            sntzWrkt['temp_feels_like_end'] = wrkt['wethr_end']['temp_feels_like']
+            sntzWrkt['wethr_cond_end'] = wrkt['wethr_end']['cond']
+            sntzWrkt['hmdty_end'] = wrkt['wethr_end']['hmdty']
+            sntzWrkt['wind_speed_end'] = wrkt['wethr_end']['wind_speed']
+            sntzWrkt['wind_gust_end'] = wrkt['wethr_end']['wind_gust']
 
-    toLakeExBrkdn.writeExercises(dbConfig['postgresql_write'], [sntzWrkt])
+        sntzWrktLst.append(sntzWrkt)
+
+    toLakeExBrkdn.writeExercises(dbConfig['postgresql_write'], sntzWrktLst)
     return sntzWrkt
 
 
