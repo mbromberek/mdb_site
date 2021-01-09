@@ -222,7 +222,7 @@ def calcWrktTags(wrkt):
     if wrkt['category'] == None:
         return wrkt_tags
 
-    wrkt_categories = ['race','training', 'hard run', 'easy', 'long run', 'warm up', 'cool down', 'midfoot strike']
+    wrkt_categories = ['race','training', 'hard run', 'easy', 'long run', 'warm up', 'cool down', 'midfoot strike', 'virtual race']
     for category_split in wrkt['category'].split(' - '):
         wrkt_tag = {}
         wrkt_tag['wrkt_dt'] = wrkt['wrkt_dt']

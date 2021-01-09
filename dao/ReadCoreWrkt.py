@@ -172,7 +172,7 @@ def comparePace(dbConfig, wrktToCompare):
         where
           wrkt.wrkt_typ = 'Running'
           and wrkt_tags.tag_typ = 'category'
-          and wrkt_tags.tag_val in ('race','long run')
+          and wrkt_tags.tag_val in ('race','long run','virtual race')
           and wrkt.dist_mi between (%s*0.9) and (%s*1.1)
         order by wrkt.pace_sec asc, wrkt.wrkt_dt desc
         ;
