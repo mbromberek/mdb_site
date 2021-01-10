@@ -153,7 +153,7 @@ def readWrkt(cur, strtWrktDt, endWrktDt):
 
     return wrktLst
 
-def comparePace(dbConfig, wrktToCompare):
+def comparePace(dbConfig, wrktToCompare, prcntDelta=0.1):
 
     try:
         conn, cur = cmnDAO.getConnection(dbConfig)
@@ -173,12 +173,12 @@ def comparePace(dbConfig, wrktToCompare):
           wrkt.wrkt_typ = 'Running'
           and wrkt_tags.tag_typ = 'category'
           and wrkt_tags.tag_val in ('race','long run','virtual race')
-          and wrkt.dist_mi between (%s*0.9) and (%s*1.1)
+          and wrkt.dist_mi between (%s) and (%s)
         order by wrkt.pace_sec asc, wrkt.wrkt_dt desc
         ;
         """
 
-        cur.execute(selectQry, (wrktToCompare['dist_mi'], wrktToCompare['dist_mi'], ))
+        cur.execute(selectQry, (wrktToCompare['dist_mi'] * (1-prcntDelta), wrktToCompare['dist_mi'] * (1+prcntDelta), ))
 
         wrktLst = []
         rowLst = cur.fetchall()

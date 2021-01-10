@@ -102,8 +102,12 @@ def compareWrktPace():
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(os.path.join(progDir, "database.ini"))
     wrkt = request.json['workout']
+    if 'prcnt_delta' in request.json:
+        prcntDelta = request.json['prcnt_delta']
+    else:
+        prcntDelta = 0.1
 
-    wrkt_compare = readWrkt.comparePace(dbConfig['postgresql_read'], wrkt)
+    wrkt_compare = readWrkt.comparePace(dbConfig['postgresql_read'], wrkt, prcntDelta=prcntDelta)
 
     return jsonify({'workout_compare': wrkt_compare}), 200
 
