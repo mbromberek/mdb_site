@@ -15,6 +15,7 @@ mkvirtualenv site
 pip install -r requirements.txt
 deactivate
 workon site
+python app.py
 workon #See all projects
 ```
 

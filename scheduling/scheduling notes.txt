@@ -1,0 +1,42 @@
+# Store mdb_site.service in /lib/systemd/system/
+
+[Unit]
+Description=mdb_site_api
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/local/bin/python3.8 /home/pi/mdb_site/app.py >> /home/pi/service/mdb_site_service.log 2>&1
+WorkingDirectory=/home/pi/mdb_site
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
+# Could not get working with virtual environment and had enough trouble getting it running on its own so not using virtual environment to run on raspberrypi
+
+
+
+
+
+sudo chmod 644 /lib/systemd/system/mdb_site.service
+chmod +x /home/pi/hello_world.py
+
+sudo systemctl daemon-reload
+sudo systemctl enable mdb_site.service
+sudo systemctl start mdb_site.service
+
+sudo systemctl status mdb_site.service
+sudo journalctl -f -u mdb_site.service
+
+vim /lib/systemd/system/mdb_site.service
+
+
+
+
+@reboot sudo python /home/pi/Desktop/pyprog/pytest.py /home/pi/Desktop/pyprog/log.txt
+@reboot /home/pi/service/run_mdb_site.bash >> /home/pi/service/mdb_site.log
+
+
+Jan 10 13:59:01 raspberrypi systemd[1]: [/lib/systemd/system/mdb_site.service:7] Executable path is not absolute, ignoring: source /home/pi/service/run_m
+Jan 10 13:59:01 raspberrypi systemd[1]: mdb_site.service: Service lacks both ExecStart= and ExecStop= setting. Refusing.

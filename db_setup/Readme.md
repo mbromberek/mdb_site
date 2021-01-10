@@ -38,7 +38,7 @@ mdb=# CREATE TABLE STG.EXERCISE_SHEET (
 # See tables in STG schema
 mdb=# \dt STG.*
 
-mdb=# select * from STG.EXERCISE;
+mdb=# select * from STG.EXERCISE_sheet;
 
 # Loaded data to STG.EXERCISE using Postico Import of CSV
 
