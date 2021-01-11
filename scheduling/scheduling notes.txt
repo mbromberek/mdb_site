@@ -40,3 +40,6 @@ vim /lib/systemd/system/mdb_site.service
 
 Jan 10 13:59:01 raspberrypi systemd[1]: [/lib/systemd/system/mdb_site.service:7] Executable path is not absolute, ignoring: source /home/pi/service/run_m
 Jan 10 13:59:01 raspberrypi systemd[1]: mdb_site.service: Service lacks both ExecStart= and ExecStop= setting. Refusing.
+
+https://www.wikihow.com/Execute-a-Script-at-Startup-on-the-Raspberry-Pi
+https://gist.github.com/emxsys/a507f3cad928e66f6410e7ac28e2990f
