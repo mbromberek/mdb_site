@@ -72,7 +72,7 @@ from STG.exercise
 );
 commit;
 
-create table LAKE.EXERCISE_BRKDN (
+CREATE TABLE lake.exercise_brkdn (
     wrkt_dt timestamp without time zone,
     wrkt_typ character varying,
     tot_tm_sec integer,
@@ -99,8 +99,26 @@ create table LAKE.EXERCISE_BRKDN (
     notes character varying,
     category character varying,
     insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    warm_up_tot_dist_mi numeric(5,2),
+    warm_up_tot_tm_sec integer,
+    warm_up_tot_pace_sec integer,
+    cool_down_tot_dist_mi numeric(5,2),
+    cool_down_tot_tm_sec integer,
+    cool_down_tot_pace_sec integer,
+    intrvl_tot_dist_mi numeric(5,2),
+    intrvl_tot_tm_sec integer,
+    intrvl_tot_pace_sec integer,
+    intrvl_tot_ele_up numeric(8,2),
+    intrvl_tot_ele_down numeric(8,2),
+    intrvl_avg_dist_mi numeric(5,2),
+    intrvl_avg_tm_sec integer,
+    intrvl_avg_pace_sec integer,
+    intrvl_avg_ele_up numeric(8,2),
+    intrvl_avg_ele_down numeric(8,2),
     CONSTRAINT wrkt_pkey PRIMARY KEY (wrkt_dt, wrkt_typ)
 );
+
+CREATE UNIQUE INDEX wrkt_pkey ON lake.exercise_brkdn(wrkt_dt timestamp_ops,wrkt_typ text_ops);
 
 ```
 
@@ -145,6 +163,24 @@ create table CORE_FITNESS.WRKT_TAGS (
     insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT wrkt_tags_pkey PRIMARY KEY (wrkt_dt, wrkt_typ, tag_typ)
 );
+
+
+--Not in use yet
+create table CORE_FITNESS.WRKT_BRKDN (
+    wrkt_dt timestamp without time zone,
+    wrkt_typ character varying,
+    brkdn_typ varchar,
+    intvl varchar,
+    tm_sec integer,
+    dist_mi numeric(6,3),
+    pace_sec integer,
+    mph numberic(6,2),
+    avg_hr numeric(5,2),
+    ele_up numeric(8,2),
+    ele_down numeric(8,2),
+    elevation numeric(8,2),
+    CONSTRAINT wrkt_pkey PRIMARY KEY (wrkt_dt, wrkt_typ, brkdn_typ, intvl)
+};
 
 
 

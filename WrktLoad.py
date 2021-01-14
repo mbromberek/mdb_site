@@ -136,6 +136,28 @@ def dictToLakeEx(wrktLst):
             raise ValueError('Value for cal_burn: ' + str(wrkt['cal_burn']) + ' is not a valid Integer')
 
         #TODO setup validation of fields
+        if 'warm_up' in wrkt:
+            sntzWrkt['warm_up_tot_dist_mi'] = wrkt['warm_up']['tot_dist_mi']
+            sntzWrkt['warm_up_tot_tm_sec'] = wrkt['warm_up']['tot_tot_tm_sec']
+            sntzWrkt['warm_up_tot_pace_sec'] = wrkt['warm_up']['tot_pace_sec']
+        if 'cool_down' in wrkt:
+            sntzWrkt['cool_down_tot_dist_mi'] = wrkt['cool_down']['tot_dist_mi']
+            sntzWrkt['cool_down_tot_tm_sec'] = wrkt['cool_down']['tot_tot_tm_sec']
+            sntzWrkt['cool_down_tot_pace_sec'] = wrkt['cool_down']['tot_pace_sec']
+        if 'intrvl' in wrkt:
+            sntzWrkt['intrvl_tot_dist_mi'] = wrkt['intrvl']['tot_dist_mi']
+            sntzWrkt['intrvl_tot_tm_sec'] = wrkt['intrvl']['tot_tot_tm_sec']
+            sntzWrkt['intrvl_tot_pace_sec'] = wrkt['intrvl']['tot_pace_sec']
+            sntzWrkt['intrvl_tot_ele_up'] = wrkt['intrvl']['tot_ele_up']
+            sntzWrkt['intrvl_tot_ele_down'] = wrkt['intrvl']['tot_ele_down']
+
+            sntzWrkt['intrvl_avg_dist_mi'] = wrkt['intrvl']['avg_dist_mi']
+            sntzWrkt['intrvl_avg_tm_sec'] = wrkt['intrvl']['avg_tot_tm_sec']
+            sntzWrkt['intrvl_avg_pace_sec'] = wrkt['intrvl']['avg_pace_sec']
+            sntzWrkt['intrvl_avg_ele_up'] = wrkt['intrvl']['avg_ele_up']
+            sntzWrkt['intrvl_avg_ele_down'] = wrkt['intrvl']['avg_ele_down']
+
+        #TODO setup validation of fields
         if 'wethr_start' in  wrkt:
             sntzWrkt['temp_strt'] = wrkt['wethr_start']['temp']
             sntzWrkt['temp_feels_like_strt'] = wrkt['wethr_start']['temp_feels_like']
