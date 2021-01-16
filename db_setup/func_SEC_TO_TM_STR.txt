@@ -14,3 +14,11 @@ create or replace function CMN.SEC_TO_TM_STR(SEC_VAR DECIMAL, FMT VARCHAR) retur
   END
   ;
   $$ LANGUAGE SQL
+
+create or replace function CMN.SEC_TO_TM_STR(SEC_VAR DECIMAL) returns VARCHAR
+AS
+$$
+SELECT
+cmn.sec_to_tm_str(sec_var, 'hms')
+;
+$$ LANGUAGE SQL

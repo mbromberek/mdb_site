@@ -6,3 +6,11 @@ create or replace function CMN.TM_STR_to_SEC(TM_STR VARCHAR, FMT VARCHAR) RETURN
 
 ;
 $$ LANGUAGE SQL
+
+create or replace function CMN.TM_STR_to_SEC(TM_STR VARCHAR) returns DECIMAL
+AS
+$$
+SELECT
+cmn.TM_STR_to_SEC(TM_STR, 'hms')
+;
+$$ LANGUAGE SQL
