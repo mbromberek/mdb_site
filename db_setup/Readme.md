@@ -219,3 +219,7 @@ Insert into cmn.apirelease values ('2020-12-24 11:57:00', 'v1',
    '/api/v1/wrkts', 'get, post, put, delete');
 select * from cmn.apirelease;
 ```
+
+```
+GRANT SELECT ON ALL TABLES IN SCHEMA STG,LAKE,CORE_FITNESS,CMN TO readaccess;
+```
