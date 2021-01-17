@@ -85,12 +85,35 @@ def normLakeExMerge(exLstOrig):
         else:
             exNorm['notes'] = ex['notes']
 
+        exNorm.update(exIntervals(ex))
+
         exNorm['wrkt_tags'] = calcWrktTags(ex)
         logger.info(exNorm)
 
         exLstMod.append(exNorm)
 
     return exLstMod
+
+def exIntervals(ex):
+    intrvl = {}
+    intrvl['warm_up_tot_dist_mi'] = ex['warm_up_tot_dist_mi']
+    intrvl['warm_up_tot_tm_sec'] = ex['warm_up_tot_tm_sec']
+    intrvl['warm_up_tot_pace_sec'] = ex['warm_up_tot_pace_sec']
+    intrvl['cool_down_tot_dist_mi'] = ex['cool_down_tot_dist_mi']
+    intrvl['cool_down_tot_tm_sec'] = ex['cool_down_tot_tm_sec']
+    intrvl['cool_down_tot_pace_sec'] = ex['cool_down_tot_pace_sec']
+    intrvl['intrvl_tot_dist_mi'] = ex['intrvl_tot_dist_mi']
+    intrvl['intrvl_tot_tm_sec'] = ex['intrvl_tot_tm_sec']
+    intrvl['intrvl_tot_pace_sec'] = ex['intrvl_tot_pace_sec']
+    intrvl['intrvl_tot_ele_up'] = ex['intrvl_tot_ele_up']
+    intrvl['intrvl_tot_ele_down'] = ex['intrvl_tot_ele_down']
+    intrvl['intrvl_avg_dist_mi'] = ex['intrvl_avg_dist_mi']
+    intrvl['intrvl_avg_tm_sec'] = ex['intrvl_avg_tm_sec']
+    intrvl['intrvl_avg_pace_sec'] = ex['intrvl_avg_pace_sec']
+    intrvl['intrvl_avg_ele_up'] = ex['intrvl_avg_ele_up']
+    intrvl['intrvl_avg_ele_down'] = ex['intrvl_avg_ele_down']
+
+    return(intrvl)
 
 def normExSheet(exLstOrig):
     exLstMod = []

@@ -65,6 +65,14 @@ def readAll(cur, strt_dt, end_dt):
       , brkdn.hmdty_strt, brkdn.wind_speed_strt, brkdn.wind_gust_strt
       , brkdn.temp_end, brkdn.temp_feels_like_end, brkdn.wethr_cond_end
       , brkdn.hmdty_end, brkdn.wind_speed_end, brkdn.wind_gust_end
+      , brkdn.warm_up_tot_dist_mi, brkdn.warm_up_tot_tm_sec, brkdn.warm_up_tot_pace_sec
+      , brkdn.cool_down_tot_dist_mi, brkdn.cool_down_tot_tm_sec, brkdn.cool_down_tot_pace_sec
+      , brkdn.intrvl_tot_dist_mi, brkdn.intrvl_tot_tm_sec
+      , brkdn.intrvl_tot_pace_sec
+      , brkdn.intrvl_tot_ele_up, brkdn.intrvl_tot_ele_down
+      , brkdn.intrvl_avg_dist_mi, brkdn.intrvl_avg_tm_sec
+      , brkdn.intrvl_avg_pace_sec
+      , brkdn.intrvl_avg_ele_up, brkdn.intrvl_avg_ele_down
     from lake.exercise_sheet sheet
     full outer join lake.exercise_brkdn brkdn
       on sheet.wrkt_dt = brkdn.wrkt_dt

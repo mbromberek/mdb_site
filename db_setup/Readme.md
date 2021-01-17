@@ -98,7 +98,6 @@ CREATE TABLE lake.exercise_brkdn (
     cal_burn integer,
     notes character varying,
     category character varying,
-    insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     warm_up_tot_dist_mi numeric(5,2),
     warm_up_tot_tm_sec integer,
     warm_up_tot_pace_sec integer,
@@ -115,6 +114,7 @@ CREATE TABLE lake.exercise_brkdn (
     intrvl_avg_pace_sec integer,
     intrvl_avg_ele_up numeric(8,2),
     intrvl_avg_ele_down numeric(8,2),
+    insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT wrkt_pkey PRIMARY KEY (wrkt_dt, wrkt_typ)
 );
 
@@ -126,7 +126,8 @@ CREATE UNIQUE INDEX wrkt_pkey ON lake.exercise_brkdn(wrkt_dt timestamp_ops,wrkt_
 ```
 create schema core_fitness;
 --Create and Populate CORE tables
-create table CORE_FITNESS.WRKT (
+
+CREATE TABLE core_fitness.wrkt (
     wrkt_dt timestamp without time zone,
     wrkt_typ character varying,
     tot_tm_sec integer,
@@ -151,6 +152,22 @@ create table CORE_FITNESS.WRKT (
     hr smallint,
     cal_burn integer,
     notes character varying,
+    warm_up_tot_dist_mi numeric(5,2),
+    warm_up_tot_tm_sec integer,
+    warm_up_tot_pace_sec integer,
+    cool_down_tot_dist_mi numeric(5,2),
+    cool_down_tot_tm_sec integer,
+    cool_down_tot_pace_sec integer,
+    intrvl_tot_dist_mi numeric(5,2),
+    intrvl_tot_tm_sec integer,
+    intrvl_tot_pace_sec integer,
+    intrvl_tot_ele_up numeric(8,2),
+    intrvl_tot_ele_down numeric(8,2),
+    intrvl_avg_dist_mi numeric(5,2),
+    intrvl_avg_tm_sec integer,
+    intrvl_avg_pace_sec integer,
+    intrvl_avg_ele_up numeric(8,2),
+    intrvl_avg_ele_down numeric(8,2),
     insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT wrkt_pkey PRIMARY KEY (wrkt_dt, wrkt_typ)
 );
