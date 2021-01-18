@@ -122,7 +122,7 @@ def compareTimePeriods():
         Currently only works with week
     wrkt_typ - running|cycling|swimming
     period_end_dt - end date to use for period (optional default current date)
-    previous_date - (NOT BUILT) y|n
+    previous_date - y|n (optional default n)
         Only used when period_end_dt is not passed
 
     returns
