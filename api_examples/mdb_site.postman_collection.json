@@ -45,9 +45,16 @@
 		},
 		{
 			"name": "LatestWorkout",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{apiId}}/api/v1/wrktsLatest",
 					"protocol": "http",
@@ -156,6 +163,42 @@
 			"response": []
 		},
 		{
+			"name": "CreateWrkt BRKDN Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"workouts\": [\n      {\n          \"wrkt_dt\": \"01/07/2021 21:50:45\", \n          \"wrkt_typ\": \"Running\", \n          \"tot_tm_sec\": 3393.650747895241, \n          \"dist_mi\": 7.27, \n          \"pace_sec\": 466.80202859631925, \n          \"wethr_start\": {\n              \"temp\": 32.08, \"temp_feels_like\": 24.67, \"hmdty\": 0.88, \"lat\": 40.60818238189673, \"lon\": -89.44117882581556, \"wind_speed\": 8.46, \"wind_gust\": 18.14, \"cond\": \"Overcast\", \"tm\": \"01/07/2021 15:50:45\"\n          }, \n          \"wethr_end\": {\n              \"temp\": 31.36, \"temp_feels_like\": 23.69, \"hmdty\": 0.89, \"lat\": 40.60832247930134, \"lon\": -89.44186030263681, \"wind_speed\": 8.63, \"wind_gust\": 18.06, \"cond\": \"Overcast\", \"tm\": \"01/07/2021 16:49:06\"\n          }, \n          \"hr\": 142, \n          \"cal_burn\": 684, \n          \"gear\": \"Brooks Adrenaline v1 Black\", \n          \"category\": \"Training\", \n          \"ele_up\": \"52.5\", \n          \"ele_down\": \"52.5\", \n          \"originLoc\": \"/Users/mikeyb/Library/Mobile Documents/iCloud~com~rungap~RunGap/Documents/Temp/2021-01-07_15-50-45_hk_1610056245.metadata.json\", \n          \"clothes\": \"Shots, thick long shirt, hat, thin long shirt, gloves, t-shirt, tank top\", \n          \"warm_up\": {\n              \"tot_dist_mi\": 1.35, \"tot_tot_tm_sec\": 639, \"tot_pace_sec\": 471.78404414014716\n          }, \n          \"cool_down\": {\n              \"tot_dist_mi\": 1.24, \"tot_tot_tm_sec\": 660, \"tot_pace_sec\": 534.2751240317891\n          }, \n          \"intrvl\": {\n              \"tot_dist_mi\": 4.67, \n              \"tot_tot_tm_sec\": 2092, \n              \"tot_pace_sec\": 447.96573875803, \n              \"tot_ele_up\": 62.8, \n              \"tot_ele_down\": -88.5, \n              \"avg_dist_mi\": 4.67, \n              \"avg_tot_tm_sec\": 2092.0, \n              \"avg_pace_sec\": 447.96573875803, \n              \"avg_ele_up\": 62.8, \n              \"avg_ele_down\": -88.5\n          }\n        }\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{apiId}}/api/v1/wrkt_brkdn",
+					"protocol": "http",
+					"host": [
+						"{{apiId}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wrkt_brkdn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "UpdtWrkt",
 			"request": {
 				"method": "PUT",
@@ -229,6 +272,45 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "ComparePeriods",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"period_typ\":\"week\",\n    \"wrkt_typ\":\"running\",\n    \"#period_end_dt\":\"2021-01-07\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{apiId}}/api/v1/comparePeriods",
+					"protocol": "http",
+					"host": [
+						"{{apiId}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"comparePeriods"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -255,6 +337,11 @@
 		{
 			"key": "apiId",
 			"value": "localhost:5000"
+		},
+		{
+			"key": "apiId",
+			"value": "192.168.7.63:5000",
+			"disabled": true
 		}
 	]
 }

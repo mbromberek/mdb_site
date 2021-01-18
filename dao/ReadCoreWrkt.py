@@ -52,6 +52,16 @@ def getWrkt(dbConfig, wrktDt):
     finally:
         cmnDAO.closeConnection(cur, conn)
 
+def getWrkt(dbConfig, strtWrktDt, endWrktDt):
+    cur = ''
+    conn = ''
+
+    try:
+        conn, cur = cmnDAO.getConnection(dbConfig)
+        return(readWrkt(cur, strtWrktDt, endWrktDt))
+    finally:
+        cmnDAO.closeConnection(cur, conn)
+
 def getWrktAll(dbConfig):
     cur = ''
     conn = ''
@@ -199,5 +209,41 @@ def comparePace(dbConfig, wrktToCompare, prcntDelta=0.1):
                 break
 
         return(workout_compare)
+    finally:
+        cmnDAO.closeConnection(cur, conn)
+
+def wrktSummary(dbConfig, wrktTyp, startDt, endDt):
+    try:
+        conn, cur = cmnDAO.getConnection(dbConfig)
+        # wrkt_dt::date extracts the date without the time
+        selectQry = """
+SELECT
+  count(1) nbr
+  , min(wrkt_dt) frst_wrkt_dt
+  , max(wrkt_dt) lst_wrkt_dt
+  , sum(TOT_TM_sec) TOT_TM_SEC
+  , sum(DIST_mi) TOT_DIST
+FROM CORE_FITNESS.WRKT
+WHERE WRKT_TYP in (~wrkt_typ~)
+  and wrkt_dt::date between $1 and $2
+;
+        """.replace('~wrkt_typ~',wrktTyp)
+
+        cur.execute("prepare summarySql as " + selectQry)
+
+        # cur.execute(selectQry, (startDt, endDt, ))
+        cur.execute("execute summarySql (%s, %s)", (startDt, endDt ))
+        row = cur.fetchone()
+        columns = [desc[0] for desc in cur.description]
+        result = dict(zip(columns, row))
+        if result['nbr'] == 0:
+            result = {}
+            result['nbr'] = 0
+            result['tot_tm_sec'] = 0
+            result['tot_dist'] = 0
+            result['frst_wrkt_dt'] = None
+            result['lst_wrkt_dt'] = None
+
+        return result
     finally:
         cmnDAO.closeConnection(cur, conn)

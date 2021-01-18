@@ -2,6 +2,7 @@
 import os, sys
 import logging
 import logging.config
+import datetime
 
 # Third party classes
 from flask import Flask
@@ -15,6 +16,7 @@ import dao.ReadApiRelease as readApi
 import dao.ReadCoreWrkt as readWrkt
 import dao.ToStgExercises as toStgEx
 import WrktLoad
+import WrktData as wrktData
 
 app = Flask(__name__)
 
@@ -110,6 +112,42 @@ def compareWrktPace():
     wrkt_compare = readWrkt.comparePace(dbConfig['postgresql_read'], wrkt, prcntDelta=prcntDelta)
 
     return jsonify({'workout_compare': wrkt_compare}), 200
+
+@app.route('/api/v1/comparePeriods', methods=['GET'])
+def compareTimePeriods():
+    '''
+    Gets summary of current workouts of type wrkt_typ for passed in period_typ for start of period until current date or the period_end_dt passed
+
+    period_typ - week|month|year (optional default week)
+        Currently only works with week
+    wrkt_typ - running|cycling|swimming
+    period_end_dt - end date to use for period (optional default current date)
+
+    returns
+        period_compare - comparison of distance, time, number of workouts, between the two periods
+        period_1 - summary of first period for period_end_dt until first day of period typ
+        period_2 - summary of second period for period_end_dt -number of days in period until first day of period typ
+    '''
+    req = request.json
+    if 'period_typ' in req:
+        periodTyp = req['period_typ']
+    else:
+        periodTyp = 'week'
+
+    if 'wrkt_typ' in req:
+        wrktTyp = req['wrkt_typ']
+    else:
+        return jsonify({"error_msg":"Missing Workout Type"}), 400
+
+    if 'period_end_dt' in req:
+        #TODO validate the date is a valid format
+        prdEndDt = datetime.datetime.strptime(req['period_end_dt'], '%Y-%m-%d')
+    else:
+        prdEndDt = datetime.datetime.today().replace(hour=0,minute=0,second=0,microsecond=0)
+
+    period_compare = wrktData.comparePeriods(periodTyp, wrktTyp, prdEndDt)
+    return jsonify(period_compare), 200
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
