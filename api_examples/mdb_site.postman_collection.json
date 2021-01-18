@@ -290,7 +290,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"period_typ\":\"week\",\n    \"wrkt_typ\":\"running\",\n    \"#period_end_dt\":\"2021-01-07\"\n}",
+					"raw": "{\n    \"period_typ\":\"week\",\n    \"wrkt_typ\":\"running\",\n    \"#period_end_dt\":\"2021-01-07\"\n    ,\"previous_date\":y\n}",
 					"options": {
 						"raw": {
 							"language": "json"

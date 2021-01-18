@@ -122,6 +122,8 @@ def compareTimePeriods():
         Currently only works with week
     wrkt_typ - running|cycling|swimming
     period_end_dt - end date to use for period (optional default current date)
+    previous_date - (NOT BUILT) y|n
+        Only used when period_end_dt is not passed
 
     returns
         period_compare - comparison of distance, time, number of workouts, between the two periods
@@ -144,7 +146,8 @@ def compareTimePeriods():
         prdEndDt = datetime.datetime.strptime(req['period_end_dt'], '%Y-%m-%d')
     else:
         prdEndDt = datetime.datetime.today().replace(hour=0,minute=0,second=0,microsecond=0)
-
+        if 'previous_date' in req and req['previous_date'].lower() == 'y':
+            prdEndDt = prdEndDt - datetime.timedelta(days=1)
     period_compare = wrktData.comparePeriods(periodTyp, wrktTyp, prdEndDt)
     return jsonify(period_compare), 200
 
