@@ -119,7 +119,6 @@ def compareTimePeriods():
     Gets summary of current workouts of type wrkt_typ for passed in period_typ for start of period until current date or the period_end_dt passed
 
     period_typ - week|month|year (optional default week)
-        Currently only works with week
     wrkt_typ - running|cycling|swimming
     period_end_dt - end date to use for period (optional default current date)
     previous_date - y|n (optional default n)

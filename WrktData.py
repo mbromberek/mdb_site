@@ -16,6 +16,7 @@ import logging
 import logging.config
 import re
 import datetime
+from dateutil.relativedelta import relativedelta
 
 # Third party classes
 import configparser
@@ -45,13 +46,32 @@ def comparePeriods(periodTyp, wrktTyp, prdEndDt):
     logger.info('Workout Type: ' + wrktTyp)
     wrktTypVal = wrktTypDict[wrktTyp]
 
-    prd1EndDt = prdEndDt
-    prdEndDay = wkDayNbr[prd1EndDt.strftime("%A")]
-    logger.info('Date %s is day %s of week', prd1EndDt, str( prdEndDay ))
+    if periodTyp.lower() == 'month':
+        prd1EndDt = prdEndDt
+        prdEndDay = int(prd1EndDt.strftime("%-d"))-1
+        logger.info('Date %s is day %s of month', prd1EndDt, str( prdEndDay ))
 
-    prd1StartDt = prd1EndDt - datetime.timedelta(days=prdEndDay)
-    prd2StartDt = prd1StartDt - datetime.timedelta(days=7)
-    prd2EndDt = prd1EndDt - datetime.timedelta(days=7)
+        prd1StartDt = prd1EndDt - datetime.timedelta(days=prdEndDay)
+        prd2StartDt = prd1StartDt + relativedelta(months=-1)
+        prd2EndDt = prd1EndDt + relativedelta(months=-1)
+    elif periodTyp.lower() == 'year':
+        prd1EndDt = prdEndDt
+        prdEndDay = int(prd1EndDt.strftime("%-j"))-1
+        logger.info('Date %s is day %s of year', prd1EndDt, str( prdEndDay ))
+
+        prd1StartDt = prd1EndDt - datetime.timedelta(days=prdEndDay)
+        prd2StartDt = prd1StartDt + relativedelta(years=-1)
+        prd2EndDt = prd1EndDt + relativedelta(years=-1)
+
+    else:
+        # if periodTyp.lower() == 'week':
+        prd1EndDt = prdEndDt
+        prdEndDay = wkDayNbr[prd1EndDt.strftime("%A")]
+        logger.info('Date %s is day %s of week', prd1EndDt, str( prdEndDay ))
+
+        prd1StartDt = prd1EndDt - datetime.timedelta(days=prdEndDay)
+        prd2StartDt = prd1StartDt - datetime.timedelta(days=7)
+        prd2EndDt = prd1EndDt - datetime.timedelta(days=7)
 
     logger.info('Summarize %s between %s and %s:', wrktTypVal, prd1StartDt, prd1EndDt)
     logger.info('Summarize %s between %s and %s:', wrktTypVal, prd2StartDt, prd2EndDt)
@@ -83,7 +103,7 @@ def comparePeriods(periodTyp, wrktTyp, prdEndDt):
         prdComp['tot_tm_delta_pct'] = round(((prd1Sum['tot_tm_sec'] / prd2Sum['tot_tm_sec']) -1) *100,2)
     prdComp['tot_tm_delta'] =  tc.formatNumbersTime(*tc.breakTimeFromSeconds(prdComp['tot_tm_delta_sec']))
     prdComp['nbr_delta'] = prd1Sum['nbr'] - prd2Sum['nbr']
-    prdComp['day_of_week_nbr'] = prdEndDay
+    prdComp['day_of_nbr'] = prdEndDay
     prdComp['day_of_week'] = prd1EndDt.strftime("%A")
 
     return {"period_compare":prdComp,"period_1":prd1Sum,"period_2":prd2Sum}
