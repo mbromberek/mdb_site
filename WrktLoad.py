@@ -199,8 +199,8 @@ def getLakeReadDtRng():
     return lakeReadDtRng
 
 
-def processNewRecords():
-    logger.info('WrktLoad Start')
+def processNewSheetRecords():
+    logger.info('processNewSheetRecords Start')
 
     progDir = os.path.dirname(os.path.abspath(__file__))
     dbConfig.read(os.path.join(progDir, "database.ini"))
@@ -219,17 +219,22 @@ def processNewRecords():
     if lakeInsrtCt > 0 and config['stg']['delete_stg'] == 'Y':
         stgDelCt = toStgEx.removeExercises(dbConfig['postgresql_write'])
         logger.info('Record count deleted from STG.EXERCISE: ' + str(stgDelCt))
+    else:
+        logger.info('No records deleted from Staging')
 
     # Read Exercises from LAKE
-    exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
+    # exLst = readEx.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
+    exLst = readLakeExMerge.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
+
     logger.info('Number of Exercises read from Lake: ' + str(len(exLst)))
 
     # Normalize data in exLst to CORE format
-    exNormLst = normData.normExSheet(exLst)
+    # exNormLst = normData.normExSheet(exLst)
+    exNormLst = normData.normLakeExMerge(exLst)
 
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)
-    logger.info('WrktLoad End')
+    logger.info('processNewSheetRecords End')
     return exNormLst
 
 def processNewBrkdnRecords():
@@ -242,18 +247,12 @@ def processNewBrkdnRecords():
     lakeReadDtRng = getLakeReadDtRng()
 
     # Read Exercises from LAKE
-    # exLst = readExBrkdn.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
     exLst = readLakeExMerge.getExercises(dbConfig['postgresql_read'], strt_dt=lakeReadDtRng['minDt'], end_dt=lakeReadDtRng['maxDt'])
 
     logger.info('Number of Exercises read from Lake: ' + str(len(exLst)))
 
     # Normalize data in exLst to CORE format
     exNormLst = normData.normLakeExMerge(exLst)
-    # exNormLst = []
-    # for ex in exLst:
-    #     ex['wrkt_tags'] = calcWrktTags(ex)
-    #     ex.pop('category',None)
-    #     exNormLst.append(ex)
 
     # Write Exercises to CORE_FITNESS
     toWrkt.writeWrkts(dbConfig['postgresql_write'], exNormLst)

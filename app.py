@@ -65,7 +65,7 @@ def createWrktSheet():
     wrktLst = request.json['workouts']
     try:
         newWrktLst = WrktLoad.dictToStgEx(wrktLst)
-        newCoreWrktLst = WrktLoad.processNewBrkdnRecords()
+        newCoreWrktLst = WrktLoad.processNewSheetRecords()
     except Exception as error:
         logger.error(repr(error))
         return jsonify({'status':repr(error)}), 400
