@@ -121,8 +121,8 @@ def compareWeather(temp, wrktTyp, tempDelta, tempCompare):
         minTemp = -9999
         maxTemp = temp + tempDelta
     elif tempCompare == 'greater':
-        minTemp = tempDelta
-        maxTemp = temp + 9999
+        minTemp = temp - tempDelta
+        maxTemp = 9999
     else: #between
         minTemp = temp - tempDelta
         maxTemp = temp + tempDelta
