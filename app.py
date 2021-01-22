@@ -150,6 +150,39 @@ def compareTimePeriods():
     period_compare = wrktData.comparePeriods(periodTyp, wrktTyp, prdEndDt)
     return jsonify(period_compare), 200
 
+@app.route('/api/v1/getSimilarWeather', methods=['GET'])
+def getSimilarWeather():
+    '''
+    Gets similar workouts for the passed temperature
+
+    temp - temperature (in Fahreneit) to compare with other workouts
+    temp_delta - (optional default 10)
+        amount to add and subtract from temperature when performing comparison
+    temp_compare - between|less|greater (optional default between)
+        compare to temperatures between, less than or equal to, or greater than or equal to the passed temp +/- temp_delta
+    wrkt_typ - running|cycling|swimming
+    '''
+    req = request.json
+    if 'temp' in req:
+        temp = req['temp']
+    else:
+        return jsonify({"error_msg":"Missing temperature"}), 400
+    if 'wrkt_typ' in req:
+        wrktTyp = req['wrkt_typ']
+    else:
+        return jsonify({"error_msg":"Missing Workout Type"}), 400
+    if 'temp_delta' in req:
+        tempDelta = req['temp_delta']
+    else:
+        tempDelta = 10
+    if 'temp_compare' in req:
+        tempCompare = req['temp_compare']
+    else:
+        tempCompare = 'between'
+
+    similarWeatherWrkts = wrktData.compareWeather(temp, wrktTyp, tempDelta, tempCompare)
+    return jsonify(similarWeatherWrkts), 200
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -247,3 +247,45 @@ WHERE WRKT_TYP in (~wrkt_typ~)
         return result
     finally:
         cmnDAO.closeConnection(cur, conn)
+
+def getWrktByWethr(dbConfig, minTemp, maxTemp, wrktTypVal):
+    try:
+        conn, cur = cmnDAO.getConnection(dbConfig)
+        selectQry = """
+select
+  wrkt.wrkt_dt, wrkt.wrkt_typ
+  , wrkt.dist_mi
+  , cmn.sec_to_tm_str(wrkt.tot_tm_sec, 'hms') duration
+  ,cmn.sec_to_tm_str(wrkt.pace_sec, 'hms') pace
+  ,round(dist_mi / wrkt.tot_tm_sec*3600,2) mph
+  ,wrkt.temp_strt, wrkt.wethr_cond_strt, wrkt.temp_feels_like_strt
+  ,wrkt.temp_end, wrkt.wethr_cond_end, wrkt.temp_feels_like_end
+  ,wrkt.clothes, wrkt.notes
+  ,wrkt_tags.tag_val,wrkt_tags.tag_typ
+from core_fitness.wrkt
+inner join (
+  select * from core_fitness.wrkt_tags
+  where tag_typ = 'category'
+) wrkt_tags
+  on wrkt.wrkt_dt = wrkt_tags.wrkt_dt
+  and wrkt.wrkt_typ = wrkt_tags.wrkt_typ
+where wrkt.wrkt_typ in (~wrkt_typ~)
+  and wrkt.temp_strt between $1 and $2
+order by wrkt.wrkt_dt desc
+;
+        """.replace('~wrkt_typ~',wrktTypVal)
+        logger.info(selectQry)
+        cur.execute("prepare summarySql as " + selectQry)
+
+        # cur.execute(selectQry, (startDt, endDt, ))
+        cur.execute("execute summarySql (%s, %s)", (minTemp, maxTemp ))
+        wrktLst = []
+        rowLst = cur.fetchall()
+        # Get list of column names
+        columns = [desc[0] for desc in cur.description]
+        for row in rowLst:
+            wrktLst.append(dict(zip(columns, row)))
+
+        return wrktLst
+    finally:
+        cmnDAO.closeConnection(cur, conn)

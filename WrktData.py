@@ -107,3 +107,31 @@ def comparePeriods(periodTyp, wrktTyp, prdEndDt):
     prdComp['day_of_week'] = prd1EndDt.strftime("%A")
 
     return {"period_compare":prdComp,"period_1":prd1Sum,"period_2":prd2Sum}
+
+def compareWeather(temp, wrktTyp, tempDelta, tempCompare):
+    dbConfig = configparser.ConfigParser()
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+
+    similarWeatherWrkts = {}
+    similarWeatherWrkts['temp'] = temp
+
+    # determine range for weather compare
+    if tempCompare == 'less':
+        minTemp = -9999
+        maxTemp = temp + tempDelta
+    elif tempCompare == 'greater':
+        minTemp = tempDelta
+        maxTemp = temp + 9999
+    else: #between
+        minTemp = temp - tempDelta
+        maxTemp = temp + tempDelta
+    wrktTypVal = wrktTypDict[wrktTyp]
+    similarWeatherWrkts['min_temp'] = minTemp
+    similarWeatherWrkts['max_temp'] = maxTemp
+
+    wrktLst = readWrkt.getWrktByWethr(dbConfig['postgresql_read'], minTemp, maxTemp, wrktTypVal)
+
+    similarWeatherWrkts['workouts'] = wrktLst
+
+    return similarWeatherWrkts
