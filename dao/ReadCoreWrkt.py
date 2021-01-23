@@ -119,34 +119,7 @@ def readWrkt(cur, strtWrktDt, endWrktDt):
     '''
     selectQry = """
     select
-      WRKT_DT
-      , WRKT_TYP
-      , tot_tm_sec
-      , dist_mi
-      , pace_sec
-      , gear
-      , tot_tm_sec
-      , dist_mi
-      , pace_sec
-      , gear
-      , temp_strt
-      , temp_feels_like_strt
-      , wethr_cond_strt
-      ,hmdty_strt
-      ,wind_speed_strt
-      ,wind_gust_strt
-      ,temp_end
-      ,temp_feels_like_end
-      ,wethr_cond_end
-      ,hmdty_end
-      ,wind_speed_end
-      ,wind_gust_end
-      ,clothes
-      ,ele_up
-      ,ele_down
-      ,hr
-      ,cal_burn
-      ,notes
+      *
     from core_fitness.wrkt
     where wrkt_dt >= %s and wrkt_dt <= %s
     ;"""

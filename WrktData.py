@@ -135,3 +135,17 @@ def compareWeather(temp, wrktTyp, tempDelta, tempCompare):
     similarWeatherWrkts['workouts'] = wrktLst
 
     return similarWeatherWrkts
+
+
+def getWrktsForDate(wrktDt, wrktTyp):
+    dbConfig = configparser.ConfigParser()
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+    strtWrktDt = wrktDt
+    endWrktDt = wrktDt + datetime.timedelta(hours=23, minutes=59, seconds=59)
+    logger.info('strtWrktDt: ' + str(strtWrktDt))
+    logger.info('endWrktDt: ' + str(endWrktDt))
+
+    wrktLst = readWrkt.getWrkt(dbConfig['postgresql_read'], strtWrktDt, endWrktDt)
+
+    return wrktLst

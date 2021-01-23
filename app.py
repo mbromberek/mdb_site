@@ -184,5 +184,24 @@ def getSimilarWeather():
     return jsonify(similarWeatherWrkts), 200
 
 
+@app.route('/api/v1/getWrktsForDate', methods=['GET'])
+def getWrktsForDate():
+
+    req = request.json
+    if 'date' in req:
+        #TODO validate the date is a valid format
+        wrktDt = datetime.datetime.strptime(req['date'], '%Y-%m-%d')
+    else:
+        return jsonify({"error_msg":"Missing date"}), 400
+    if 'wrkt_typ' in req:
+        wrktTyp = req['wrkt_typ']
+    else:
+        wrktTyp = None
+
+    wrktLst = wrktData.getWrktsForDate(wrktDt, wrktTyp)
+
+    return jsonify(wrktLst), 200
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
