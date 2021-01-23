@@ -30,7 +30,9 @@ def writeExercises(dbConfig, exLst):
         conn, cur = cmnDAO.getConnection(dbConfig)
         insrtCt, updtCt = writeExerciseAll(cur, copy.deepcopy(exLst))
         conn.commit();
-        return insrtCt
+        logger.debug('New records to LAKE.EXERCISE_SHEET: ' + str(insrtCt))
+        logger.debug('Update records to LAKE.EXERCISE_SHEET: ' + str(updtCt))
+        return insrtCt+updtCt
     except (Exception, psycopg2.DatabaseError) as error:
         logger.error(error)
         return -1
@@ -51,12 +53,13 @@ def writeExerciseAll(cur, exLst):
         logger.debug(cur.mogrify(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values))))
         cur.execute(isrtStmt, (psycopg2.extensions.AsIs(','.join(columns)), tuple(values)))
         if recordExist:
-            insrtCt = insrtCt +1
-        else:
             updtCt = updtCt +1
+        else:
+            insrtCt = insrtCt +1
     return insrtCt, updtCt
 
 def killExercise(cur, wrkt_dt, wrkt_typ):
+    logger.debug("delete wrkt from lake.exercise_sheet: " + str(wrkt_dt))
     deleteQry = 'delete from lake.exercise_sheet where wrkt_dt = %s and wrkt_typ = %s'
     cur.execute(deleteQry, (wrkt_dt,wrkt_typ,))
     rowsDeleted = cur.rowcount
