@@ -1,0 +1,243 @@
+{
+	"info": {
+		"_postman_id": "1d2c36b5-f135-4286-95d2-31009026fd61",
+		"name": "mdb_site Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01 CreateWrktBrkdn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"workouts\": [\n      {\n          \"wrkt_dt\": \"01/08/2021 21:50:45\", \n          \"wrkt_typ\": \"Running\", \n          \"tot_tm_sec\": 3393.650747895241, \n          \"dist_mi\": 7.27, \n          \"pace_sec\": 466.80202859631925, \n          \"wethr_start\": {\n              \"temp\": 32.08, \"temp_feels_like\": 24.67, \"hmdty\": 0.88, \"lat\": 40.60818238189673, \"lon\": -89.44117882581556, \"wind_speed\": 8.46, \"wind_gust\": 18.14, \"cond\": \"Overcast\", \"tm\": \"01/08/2021 21:50:45\"\n          }, \n          \"wethr_end\": {\n              \"temp\": 31.36, \"temp_feels_like\": 23.69, \"hmdty\": 0.89, \"lat\": 40.60832247930134, \"lon\": -89.44186030263681, \"wind_speed\": 8.63, \"wind_gust\": 18.06, \"cond\": \"Overcast\", \"tm\": \"01/08/2021 22:40:45\"\n          }, \n          \"hr\": 142, \n          \"cal_burn\": 684, \n          \"gear\": \"Brooks Adrenaline v1 Black\", \n          \"category\": \"Training\", \n          \"ele_up\": \"52.5\", \n          \"ele_down\": \"51.3\", \n          \"originLoc\": \"/Users/mikeyb/Library/Mobile Documents/iCloud~com~rungap~RunGap/Documents/Temp/2021-01-07_15-50-45_hk_1610056245.metadata.json\", \n          \"clothes\": \"\", \n          \"warm_up\": {\n              \"tot_dist_mi\": 1.35, \"tot_tot_tm_sec\": 639, \"tot_pace_sec\": 471.78404414014716\n          }, \n          \"cool_down\": {\n              \"tot_dist_mi\": 1.24, \"tot_tot_tm_sec\": 660, \"tot_pace_sec\": 534.2751240317891\n          }, \n          \"intrvl\": {\n              \"tot_dist_mi\": 4.67, \n              \"tot_tot_tm_sec\": 2092, \n              \"tot_pace_sec\": 447.96573875803, \n              \"tot_ele_up\": 62.8, \n              \"tot_ele_down\": -88.5, \n              \"avg_dist_mi\": 4.67, \n              \"avg_tot_tm_sec\": 2092.0, \n              \"avg_pace_sec\": 447.96573875803, \n              \"avg_ele_up\": 62.8, \n              \"avg_ele_down\": -88.5\n          }\n        },\n        {\n          \"wrkt_dt\": \"01/07/2021 03:00:45\", \n          \"wrkt_typ\": \"Running\", \n          \"tot_tm_sec\": 3593.650747895241, \n          \"dist_mi\": 10.27, \n          \"pace_sec\": 486.80202859631925, \n          \"wethr_start\": {\n              \"temp\": 22.08, \"temp_feels_like\": 25.67, \"hmdty\": 0.89, \"lat\": 41.60818238189673, \"lon\": -90.44117882581556, \"wind_speed\": 10.46, \"wind_gust\": 30.14, \"cond\": \"Overcast\", \"tm\": \"01/07/2021 03:00:45\"\n          }, \n          \"wethr_end\": {\n              \"temp\": 10.36, \"temp_feels_like\": 15.69, \"hmdty\": 0.99, \"lat\": 39.60832247930134, \"lon\": -91.44186030263681, \"wind_speed\": 0.63, \"wind_gust\": 1.06, \"cond\": \"Overcast\", \"tm\": \"01/07/2021 16:49:06\"\n          }, \n          \"hr\": 170, \n          \"cal_burn\": 884, \n          \"gear\": \"NB 860 v8 Aluminum\", \n          \"category\": \"Easy\", \n          \"ele_up\": \"80.5\", \n          \"ele_down\": \"90.3\", \n          \"originLoc\": \"/Users/mikeyb/Library/Mobile Documents/iCloud~com~rungap~RunGap/Documents/Temp/2021-01-07_15-50-45_hk_1610056245.metadata.json\", \n          \"clothes\": \"\", \n          \"warm_up\": {\n              \"tot_dist_mi\": 1.55, \"tot_tot_tm_sec\": 639, \"tot_pace_sec\": 471.78404414014716\n          }, \n          \"cool_down\": {\n              \"tot_dist_mi\": 0.24, \"tot_tot_tm_sec\": 660, \"tot_pace_sec\": 534.2751240317891\n          }, \n          \"intrvl\": {\n              \"tot_dist_mi\": 5.67, \n              \"tot_tot_tm_sec\": 2093, \n              \"tot_pace_sec\": 457.96573875803, \n              \"tot_ele_up\": 62.8, \n              \"tot_ele_down\": -88.5, \n              \"avg_dist_mi\": 4.67, \n              \"avg_tot_tm_sec\": 2092.0, \n              \"avg_pace_sec\": 447.96573875803, \n              \"avg_ele_up\": 62.8, \n              \"avg_ele_down\": -88.5\n          }\n        }\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{server}}/api/v1/wrkt_brkdn",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wrkt_brkdn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 CreateWrkt Sheet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"workouts\": [\n      {\n\t    \"cal_burn\": 684, \n\t    \"category\":\"Training - 800m repeats\",\n        \"dist\": 7.27, \n        \"dist_km\": 11.23, \n        \"elevation\": \"52.5↑\\n51.3↓\", \n        \"gear\": \"NB 860 v7 Phantom\", \n        \"hr\": 142, \n        \"notes\": \"Start: 15 degrees Overcast, 69 percent humidity, wind speed 6.42 mph, wind gust 11.33mph, feels like 6 degrees. \\nEnd: 15 degrees Overcast, 69 percent humidity, wind speed 5.58 mph, wind gust 8.33mph, feels like 6 degrees. \\nTights, t-shirt, tank top, thin long shirt, thick long shirt, gloves, hat, face mask.\\nWas windy and in Lemont so hilly. \\nRight quad/thigh felt a little sore after 6th mile. But legs have felt fine since being done. \\nPace was slower that I would like but the cold, dark, wind, and hills it was hard to care about my pace so just went at a comfortable pace. \", \n        \"pace\": \"7m 47s\", \n        \"tot_tm\": \"0h 56m 34s\", \n        \"wrkt_dt\": \"01/08/2021 09:50:45 PM\", \n        \"wrkt_typ\": \"Running\"\n      },\n      {\n\t    \"cal_burn\": 884, \n\t    \"category\":\"Easy\",\n        \"dist\": 10.27, \n        \"dist_km\": 15.23, \n        \"elevation\": \"80.5↑\\n90.3↓\", \n        \"gear\": \"Brooks Adrenaline v2 Grey\", \n        \"hr\": 170, \n        \"notes\": \"Start: 15 degrees Overcast, 69 percent humidity, wind speed 6.42 mph, wind gust 11.33mph, feels like 6 degrees. \\nEnd: 15 degrees Overcast, 69 percent humidity, wind speed 5.58 mph, wind gust 8.33mph, feels like 6 degrees. \\nTights, tank top, thin long shirt, thick long shirt, gloves, hat, face mask.\\nWas windy and in Lemont so hilly. \\nRight quad/thigh felt a little sore after 6th mile. But legs have felt fine since being done. \\nPace was slower that I would like but the cold, dark, wind, and hills it was hard to care about my pace so just went at a comfortable pace. \", \n        \"pace\": \"8m 7s\", \n        \"tot_tm\": \"0h 59m 54s\", \n        \"wrkt_dt\": \"01/07/2021 03:00:45 AM\", \n        \"wrkt_typ\": \"Running\"\n      }\n  ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{server}}/api/v1/wrkt_sheet",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wrkt_sheet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 Get workouts for date",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"date\": \"2021-01-23\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{server}}/api/v1/getWrktsForDate",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"getWrktsForDate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 ComparePace",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"workout\": {\n\t\"wrkt_dt\": \"01/23/2021 07:05:48 AM\",\n\t\"dist_mi\": 12\n  },\n  \"prcnt_delta\" : 0.05\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{server}}/api/v1/comparePace",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"comparePace"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiId",
+			"value": "localhost:5000"
+		},
+		{
+			"key": "apiId",
+			"value": "192.168.7.63:5000",
+			"disabled": true
+		}
+	]
+}
