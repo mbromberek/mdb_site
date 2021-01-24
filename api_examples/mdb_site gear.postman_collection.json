@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "37389f36-f637-48f2-ab69-c4ffbea5a983",
+		"name": "mdb_site gear",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CreateWrkt Sheet Copy",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"retire\":\"y\",\n    \"id\":[\"71\"],\n    \"name\":[\"361v2\",\"Saucony\"]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{server}}/api/v1/gear_retire",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"gear_retire"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -220,6 +220,62 @@ Insert into cmn.apirelease values ('2020-12-24 11:57:00', 'v1',
 select * from cmn.apirelease;
 ```
 
+
+## Create tables to store gear information
+```
+create table CORE_FITNESS.GEAR (
+  id serial primary key, --setup to auto increment
+  name varchar not null unique,
+  prchse_dt date,
+  price numeric(8,2) check (price >0),
+  retired boolean default false,
+  type varchar not null check (type in ('shoe','insole','bike')), --shoe, insole, bike
+  company varchar,
+  insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+)
+;
+
+create table CORE_FITNESS.SHOE_INSOLE (
+  insole_id integer references core_fitness.gear (id),
+  shoe_id integer references core_fitness.gear (id),
+  adjust_miles numeric(8,2) default 0,
+  link_strt_dt date,
+  insrt_ts timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  constraint shoe_insole_pkey PRIMARY KEY (insole_id, shoe_id)
+)
+;
+
+comment on table core_fitness.shoe_insole is 'Shows the insole that is being used in a shoe';
+comment on column core_fitness.shoe_insole.adjust_miles is 'When started using the insole with the shoe';
+comment on column core_fitness.shoe_insole.link_strt_dt is 'Remove miles run on a shoe but not with the insole';
+
+GRANT SELECT ON ALL TABLES IN SCHEMA STG,LAKE,CORE_FITNESS,CMN TO readaccess;
+GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA CMN,STG,LAKE,CORE_FITNESS TO writer_role;
+
+
+```
+
 ```
 GRANT SELECT ON ALL TABLES IN SCHEMA STG,LAKE,CORE_FITNESS,CMN TO readaccess;
+```
+
+## Not in use
+```
+create table CORE_FITNESS.WRKT_BRKDN (
+    wrkt_dt timestamp without time zone,
+    wrkt_typ character varying,
+    brkdn_typ varchar,
+    intvl varchar,
+    tm_sec integer,
+    dist_mi numeric(6,3),
+    pace_sec integer,
+    mph numberic(6,2),
+    avg_hr numeric(5,2),
+    ele_up numeric(8,2),
+    ele_down numeric(8,2),
+    elevation numeric(8,2),
+    CONSTRAINT wrkt_pkey PRIMARY KEY (wrkt_dt, wrkt_typ, brkdn_typ, intvl)
+)
+;
+
 ```

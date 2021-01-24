@@ -17,6 +17,7 @@ import dao.ReadCoreWrkt as readWrkt
 import dao.ToStgExercises as toStgEx
 import WrktLoad
 import WrktData as wrktData
+import GearProcess
 
 app = Flask(__name__)
 
@@ -202,6 +203,30 @@ def getWrktsForDate():
 
     return jsonify(wrktLst), 200
 
+
+@app.route('/api/v1/gear_retire', methods=['PUT'])
+def gearRetire():
+
+    req = request.json
+    if 'id' in req:
+        idLst = req['id']
+    else:
+        idLst = [-1]
+    if 'name' in req:
+        nameLst = req['name']
+    else:
+        nameLst = ['None']
+    if 'retire' in req:
+        if req['retire'].lower() == 'y':
+            retire = True
+        else:
+            retire = False
+    else:
+        return jsonify({"error_msg":"Missing retire status"}), 400
+
+    GearProcess.updtRetirement(retire, idLst, nameLst)
+
+    return jsonify({'status':'success'}), 200
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
