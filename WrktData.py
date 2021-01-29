@@ -232,11 +232,17 @@ def breakUpWorkoutIntervals(wrkt):
     wrktEdit['intrvl']['tot_pace_sec'] = wrkt['intrvl_tot_pace_sec']
     wrktEdit['intrvl']['tot_tot_tm_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_tot_tm_sec']))
     wrktEdit['intrvl']['tot_pace_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_tot_pace_sec']))
+    wrktEdit['intrvl']['tot_ele_up'] = wrkt['intrvl_tot_ele_up']
+    wrktEdit['intrvl']['tot_ele_down'] = wrkt['intrvl_tot_ele_down']
+
     wrktEdit['intrvl']['avg_dist_mi'] = wrkt['intrvl_avg_dist_mi']
     wrktEdit['intrvl']['avg_tot_tm_sec'] = wrkt['intrvl_avg_tm_sec']
     wrktEdit['intrvl']['avg_pace_sec'] = wrkt['intrvl_avg_pace_sec']
     wrktEdit['intrvl']['avg_tot_tm_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_avg_tm_sec']))
     wrktEdit['intrvl']['avg_pace_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_avg_pace_sec']))
+    wrktEdit['intrvl']['avg_ele_up'] = wrkt['intrvl_avg_ele_up']
+    wrktEdit['intrvl']['avg_ele_down'] = wrkt['intrvl_avg_ele_down']
+
 
     return wrktEdit
 
