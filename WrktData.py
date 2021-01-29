@@ -17,6 +17,7 @@ import logging.config
 import re
 import datetime
 from dateutil.relativedelta import relativedelta
+import copy
 
 # Third party classes
 import configparser
@@ -149,3 +150,98 @@ def getWrktsForDate(wrktDt, wrktTyp):
     wrktLst = readWrkt.getWrkt(dbConfig['postgresql_read'], strtWrktDt, endWrktDt)
 
     return wrktLst
+
+def getWrkt(wrktDt, wrktTyp):
+    dbConfig = configparser.ConfigParser()
+    progDir = os.path.dirname(os.path.abspath(__file__))
+    dbConfig.read(os.path.join(progDir, "database.ini"))
+
+    logger.info('getWrkt - wrktDt:' + str(wrktDt) + ' wrktTyp:' + wrktTyp )
+
+    wrktLst = readWrkt.getWrkt(dbConfig['postgresql_read'], wrktDt, wrktDt)
+
+    if len(wrktLst) >0:
+        return formatWrktForReturn(wrktLst)
+    else:
+        return None
+
+
+def formatWrktForReturn(wrktLst):
+    '''
+    Change formatting of workout that was received from database into format needed for returning with API
+    '''
+    wrktEditLst = []
+    for wrkt in wrktLst:
+        # wrktEdit = copy.deepcopy(wrkt)
+        wrktEdit = {}
+        # Change wrkt_dt to string format '%Y-%m-%d %H:%M:%S'
+        wrktEdit['wrkt_dt'] = datetime.datetime.strftime(wrkt['wrkt_dt'], '%Y-%m-%d %H:%M:%S')
+        wrktEdit['wrkt_typ'] = wrkt['wrkt_typ']
+        wrktEdit['dist_mi'] = wrkt['dist_mi']
+        wrktEdit['tot_tm_sec'] = wrkt['tot_tm_sec']
+        wrktEdit['tot_tm'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrktEdit['tot_tm_sec']))
+        wrktEdit['pace_sec'] = wrkt['pace_sec']
+        wrktEdit['pace'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrktEdit['pace_sec']))
+        wrktEdit['hr'] = wrkt['hr']
+        wrktEdit['cal_burn'] = wrkt['cal_burn']
+        wrktEdit['gear'] = wrkt['gear']
+        wrktEdit['ele_up'] = wrkt['ele_up']
+        wrktEdit['ele_down'] = wrkt['ele_down']
+        wrktEdit['clothes'] = wrkt['clothes']
+
+        # Change how weather is formatted
+        wrktEdit.update(breakUpWeather(wrkt))
+
+        # change how warm_up, cool_down, and intervals are stored
+        wrktEdit.update(breakUpWorkoutIntervals(wrkt))
+
+        # wrktEdit.pop('warm_up_tot_dist_mi',None)
+        # wrktEdit.pop('warm_up_tot_tm_sec',None)
+        # wrktEdit.pop('warm_up_tot_pace_sec',None)
+        # wrktEdit.pop('cool_down_tot_dist_mi',None)
+        # wrktEdit.pop('cool_down_tot_tm_sec',None)
+        # wrktEdit.pop('cool_down_tot_pace_sec',None)
+
+        # store pace and tot_tm as strings along with seconds
+
+        # Get category?
+        wrktEditLst.append(wrktEdit)
+
+    return wrktEditLst
+
+def breakUpWorkoutIntervals(wrkt):
+    wrktEdit = {}
+
+    wrktEdit['warm_up'] = {}
+    wrktEdit['warm_up']['tot_dist_mi'] = wrkt['warm_up_tot_dist_mi']
+    wrktEdit['warm_up']['tot_tot_tm_sec'] = wrkt['warm_up_tot_tm_sec']
+    wrktEdit['warm_up']['tot_pace_sec'] = wrkt['warm_up_tot_pace_sec']
+    wrktEdit['warm_up']['tot_tot_tm_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['warm_up_tot_tm_sec']))
+    wrktEdit['warm_up']['tot_pace_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['warm_up_tot_pace_sec']))
+    wrktEdit['cool_down'] = {}
+    wrktEdit['cool_down']['tot_dist_mi'] = wrkt['cool_down_tot_dist_mi']
+    wrktEdit['cool_down']['tot_tot_tm_sec'] = wrkt['cool_down_tot_tm_sec']
+    wrktEdit['cool_down']['tot_pace_sec'] = wrkt['cool_down_tot_pace_sec']
+    wrktEdit['cool_down']['tot_tot_tm_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['cool_down_tot_tm_sec']))
+    wrktEdit['cool_down']['tot_pace_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['cool_down_tot_pace_sec']))
+    wrktEdit['intrvl'] = {}
+    wrktEdit['intrvl']['tot_dist_mi'] = wrkt['intrvl_tot_dist_mi']
+    wrktEdit['intrvl']['tot_tot_tm_sec'] = wrkt['intrvl_tot_tm_sec']
+    wrktEdit['intrvl']['tot_pace_sec'] = wrkt['intrvl_tot_pace_sec']
+    wrktEdit['intrvl']['tot_tot_tm_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_tot_tm_sec']))
+    wrktEdit['intrvl']['tot_pace_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_tot_pace_sec']))
+    wrktEdit['intrvl']['avg_dist_mi'] = wrkt['intrvl_avg_dist_mi']
+    wrktEdit['intrvl']['avg_tot_tm_sec'] = wrkt['intrvl_avg_tm_sec']
+    wrktEdit['intrvl']['avg_pace_sec'] = wrkt['intrvl_avg_pace_sec']
+    wrktEdit['intrvl']['avg_tot_tm_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_avg_tm_sec']))
+    wrktEdit['intrvl']['avg_pace_str'] = tc.formatNumbersTime(*tc.breakTimeFromSeconds(wrkt['intrvl_avg_pace_sec']))
+
+    return wrktEdit
+
+def update(breakUpWeather(wrkt)):
+    wrktEdit = {}
+    wrktEdit['wethr_start'] = {}
+
+    wrktEdit['wethr_end'] = {}
+
+    return wrktEdit

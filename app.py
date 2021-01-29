@@ -204,6 +204,28 @@ def getWrktsForDate():
     return jsonify(wrktLst), 200
 
 
+@app.route('/api/v1/getWrkt', methods=['GET'])
+def getWrkt():
+
+    req = request.json
+    if 'date' in req:
+        #TODO validate the date is a valid format
+        # wrktDt = datetime.datetime.strptime(req['date'], '%Y-%m-%d %H:%M:%S')
+        wrktDt = datetime.datetime.fromisoformat(req['date'])
+    else:
+        return jsonify({"error_msg":"Missing date"}), 400
+    if 'wrkt_typ' in req:
+        wrktTyp = req['wrkt_typ']
+    else:
+        wrktTyp = None
+
+    wrkt = wrktData.getWrkt(wrktDt, wrktTyp)
+    if wrkt != None:
+        return jsonify({'status':'success','workouts':wrkt}), 200
+    else:
+        return jsonify({'status':'no workouts for date'}), 200
+
+
 @app.route('/api/v1/gear_retire', methods=['PUT'])
 def gearRetire():
 
