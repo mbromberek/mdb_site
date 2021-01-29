@@ -149,7 +149,7 @@ def getWrktsForDate(wrktDt, wrktTyp):
 
     wrktLst = readWrkt.getWrkt(dbConfig['postgresql_read'], strtWrktDt, endWrktDt)
 
-    return wrktLst
+    return formatWrktForReturn(wrktLst)
 
 def getWrkt(wrktDt, wrktTyp):
     dbConfig = configparser.ConfigParser()
@@ -188,6 +188,8 @@ def formatWrktForReturn(wrktLst):
         wrktEdit['ele_up'] = wrkt['ele_up']
         wrktEdit['ele_down'] = wrkt['ele_down']
         wrktEdit['clothes'] = wrkt['clothes']
+
+        # wrktEdit['originLoc'] = wrkt['originLoc']
 
         # Change how weather is formatted
         wrktEdit.update(breakUpWeather(wrkt))
@@ -238,10 +240,28 @@ def breakUpWorkoutIntervals(wrkt):
 
     return wrktEdit
 
-def update(breakUpWeather(wrkt)):
+def breakUpWeather(wrkt):
     wrktEdit = {}
     wrktEdit['wethr_start'] = {}
+    wrktEdit['wethr_start']['temp'] = wrkt['temp_strt']
+    wrktEdit['wethr_start']['temp_feels_like'] = wrkt['temp_feels_like_strt']
+    wrktEdit['wethr_start']['hmdty'] = wrkt['hmdty_strt']
+    wrktEdit['wethr_start']['wind_speed'] = wrkt['wind_speed_strt']
+    wrktEdit['wethr_start']['wind_gust'] = wrkt['wind_gust_strt']
+    wrktEdit['wethr_start']['cond'] = wrkt['wethr_cond_strt']
+    # wrktEdit['wethr_start']['lat'] = wrkt['']
+    # wrktEdit['wethr_start']['lon'] = wrkt['']
+    # wrktEdit['wethr_start']['tm'] = wrkt['']
 
     wrktEdit['wethr_end'] = {}
+    wrktEdit['wethr_end']['temp'] = wrkt['temp_end']
+    wrktEdit['wethr_end']['temp_feels_like'] = wrkt['temp_feels_like_end']
+    wrktEdit['wethr_end']['hmdty'] = wrkt['hmdty_end']
+    wrktEdit['wethr_end']['wind_speed'] = wrkt['wind_speed_end']
+    wrktEdit['wethr_end']['wind_gust'] = wrkt['wind_gust_end']
+    wrktEdit['wethr_end']['cond'] = wrkt['wethr_cond_end']
+    # wrktEdit['wethr_end']['lat'] = wrkt['']
+    # wrktEdit['wethr_end']['lon'] = wrkt['']
+    # wrktEdit['wethr_end']['tm'] = wrkt['']
 
     return wrktEdit

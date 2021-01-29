@@ -254,7 +254,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"temp\": 10,\n  \"temp_delta\":1,\n  \"temp_compare\": \"less\",\n  \"wrkt_typ\":\"running\"\n}",
+					"raw": "{\n  \"temp\": 30,\n  \"temp_delta\":5,\n  \"temp_compare\": \"between\",\n  \"wrkt_typ\":\"running\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -293,7 +293,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"period_typ\":\"week\",\n    \"wrkt_typ\":\"running\",\n    \"#period_end_dt\":\"2021-01-19\"\n    ,\"#previous_date\":\"n\"\n}",
+					"raw": "{\n    \"period_typ\":\"week\",\n    \"wrkt_typ\":\"running\",\n    \"#period_end_dt\":\"2021-01-19\"\n    ,\"previous_date\":\"y\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -349,6 +349,45 @@
 						"api",
 						"v1",
 						"getWrktsForDate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get workout",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"date\": \"2021-01-26 17:28:30\",\n    \"#date\": \"2021-01-07 21:50:45\",\n    \"wrkt_typ\":\"running\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{server}}/api/v1/getWrkt",
+					"protocol": "http",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"getWrkt"
 					]
 				}
 			},
