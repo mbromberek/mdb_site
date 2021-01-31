@@ -92,6 +92,8 @@ def readMaxDt(cur, type):
         result = row[0]
 
     return result
+
+
 def readInsrtTs(cur, type):
     '''
     Parameter database cursor

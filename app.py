@@ -51,14 +51,8 @@ def home_index():
 
 @app.route('/api/v1/wrktsLatest', methods=['GET'])
 def getLatestWrkts():
-    dbConfig = configparser.ConfigParser()
-    progDir = os.path.dirname(os.path.abspath(__file__))
-    dbConfig.read(os.path.join(progDir, "database.ini"))
-
-    latestWrktDt = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
-    wrkt = readWrkt.getWrkt(dbConfig['postgresql_read'], latestWrktDt)
-
-    return jsonify({'workout': wrkt}), 200
+    wrktLst = wrktData.getLatestWrkt()
+    return jsonify({'workouts': wrktLst}), 200
 
 @app.route('/api/v1/wrkt_sheet', methods=['POST'])
 def createWrktSheet():

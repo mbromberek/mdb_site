@@ -30,6 +30,10 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger()
 readWrkt.logger = logger
 
+dbConfig = configparser.ConfigParser()
+progDir = os.path.dirname(os.path.abspath(__file__))
+dbConfig.read(os.path.join(progDir, "database.ini"))
+
 wkDayNbr = {"Monday":0,"Tuesday":1,"Wednesday":2,"Thursday":3,"Friday":4, "Saturday":5,"Sunday":6}
 wrktTypDict = {"running":"'Running', 'Indoor Running'", "cycling":"'Cycling','Indoor Cycling'", "swimming":"Swimming"}
 
@@ -151,10 +155,19 @@ def getWrktsForDate(wrktDt, wrktTyp):
 
     return formatWrktForReturn(wrktLst)
 
-def getWrkt(wrktDt, wrktTyp):
-    dbConfig = configparser.ConfigParser()
-    progDir = os.path.dirname(os.path.abspath(__file__))
-    dbConfig.read(os.path.join(progDir, "database.ini"))
+def getLatestWrkt():
+
+    latestWrktDt = readWrkt.getMaxWrktDt(dbConfig['postgresql_read'])
+    # wrkt = readWrkt.getWrkt(dbConfig['postgresql_read'], latestWrktDt)
+    wrktLst = getWrkt(latestWrktDt)
+
+    return wrktLst
+
+
+def getWrkt(wrktDt, wrktTyp='Running'):
+    # dbConfig = configparser.ConfigParser()
+    # progDir = os.path.dirname(os.path.abspath(__file__))
+    # dbConfig.read(os.path.join(progDir, "database.ini"))
 
     logger.info('getWrkt - wrktDt:' + str(wrktDt) + ' wrktTyp:' + wrktTyp )
 
@@ -190,23 +203,14 @@ def formatWrktForReturn(wrktLst):
         wrktEdit['clothes'] = wrkt['clothes']
 
         # wrktEdit['originLoc'] = wrkt['originLoc']
+        wrktEdit['insrt_ts'] = wrkt['insrt_ts']
 
-        # Change how weather is formatted
         wrktEdit.update(breakUpWeather(wrkt))
-
-        # change how warm_up, cool_down, and intervals are stored
         wrktEdit.update(breakUpWorkoutIntervals(wrkt))
 
-        # wrktEdit.pop('warm_up_tot_dist_mi',None)
-        # wrktEdit.pop('warm_up_tot_tm_sec',None)
-        # wrktEdit.pop('warm_up_tot_pace_sec',None)
-        # wrktEdit.pop('cool_down_tot_dist_mi',None)
-        # wrktEdit.pop('cool_down_tot_tm_sec',None)
-        # wrktEdit.pop('cool_down_tot_pace_sec',None)
-
-        # store pace and tot_tm as strings along with seconds
-
         # Get category?
+
+
         wrktEditLst.append(wrktEdit)
 
     return wrktEditLst
