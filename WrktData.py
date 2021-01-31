@@ -43,9 +43,9 @@ def comparePeriods(periodTyp, wrktTyp, prdEndDt):
     Example comparing run workouts between current week and previous week only using data up to Wednesday of the two weeks.
     prdEndDt is used for getting the end date in the two periods being compared
     '''
-    dbConfig = configparser.ConfigParser()
-    progDir = os.path.dirname(os.path.abspath(__file__))
-    dbConfig.read(os.path.join(progDir, "database.ini"))
+    # dbConfig = configparser.ConfigParser()
+    # progDir = os.path.dirname(os.path.abspath(__file__))
+    # dbConfig.read(os.path.join(progDir, "database.ini"))
 
     logger.info('Period Type: ' + periodTyp)
     logger.info('Workout Type: ' + wrktTyp)
@@ -114,9 +114,9 @@ def comparePeriods(periodTyp, wrktTyp, prdEndDt):
     return {"period_compare":prdComp,"period_1":prd1Sum,"period_2":prd2Sum}
 
 def compareWeather(temp, wrktTyp, tempDelta, tempCompare):
-    dbConfig = configparser.ConfigParser()
-    progDir = os.path.dirname(os.path.abspath(__file__))
-    dbConfig.read(os.path.join(progDir, "database.ini"))
+    # dbConfig = configparser.ConfigParser()
+    # progDir = os.path.dirname(os.path.abspath(__file__))
+    # dbConfig.read(os.path.join(progDir, "database.ini"))
 
     similarWeatherWrkts = {}
     similarWeatherWrkts['temp'] = temp
@@ -143,9 +143,9 @@ def compareWeather(temp, wrktTyp, tempDelta, tempCompare):
 
 
 def getWrktsForDate(wrktDt, wrktTyp):
-    dbConfig = configparser.ConfigParser()
-    progDir = os.path.dirname(os.path.abspath(__file__))
-    dbConfig.read(os.path.join(progDir, "database.ini"))
+    # dbConfig = configparser.ConfigParser()
+    # progDir = os.path.dirname(os.path.abspath(__file__))
+    # dbConfig.read(os.path.join(progDir, "database.ini"))
     strtWrktDt = wrktDt
     endWrktDt = wrktDt + datetime.timedelta(hours=23, minutes=59, seconds=59)
     logger.info('strtWrktDt: ' + str(strtWrktDt))

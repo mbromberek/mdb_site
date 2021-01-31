@@ -41,9 +41,9 @@ def hello_name(name):
 
 @app.route("/api/v1/info")
 def home_index():
-    dbConfig = configparser.ConfigParser()
-    progDir = os.path.dirname(os.path.abspath(__file__))
-    dbConfig.read(os.path.join(progDir, "database.ini"))
+    # dbConfig = configparser.ConfigParser()
+    # progDir = os.path.dirname(os.path.abspath(__file__))
+    # dbConfig.read(os.path.join(progDir, "database.ini"))
 
     apiLst = readApi.getApiVersions(dbConfig['postgresql_read'])
 
@@ -95,9 +95,9 @@ def getWrktAll():
 
 @app.route('/api/v1/comparePace', methods=['GET'])
 def compareWrktPace():
-    dbConfig = configparser.ConfigParser()
-    progDir = os.path.dirname(os.path.abspath(__file__))
-    dbConfig.read(os.path.join(progDir, "database.ini"))
+    # dbConfig = configparser.ConfigParser()
+    # progDir = os.path.dirname(os.path.abspath(__file__))
+    # dbConfig.read(os.path.join(progDir, "database.ini"))
     wrkt = request.json['workout']
     if 'prcnt_delta' in request.json:
         prcntDelta = request.json['prcnt_delta']
